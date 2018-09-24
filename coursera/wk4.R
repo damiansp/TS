@@ -82,7 +82,7 @@ pacf(ar.process, main='PACF')
 
 
 
-# Estimation of model params in AR(3) sim
+# Yule-Walker estimation of model params in AR(3) sim
 sigma <- 4
 phi <- c(1/3, 1/2, 7/100)
 n <- 100000
@@ -91,18 +91,18 @@ ar3.process <- arima.sim(n, model=list(ar=phi), sd=sigma)
 r <- acf(ar3.process, plot=F)$acf[2:4]
 
 R <- matrix(1, 3, 3)
-R[1,2] <- r[1] 
-R[1,3] <- r[2]
-R[2,1] <- r[1]
-R[2,3] <- r[1]
-R[3,1] <- r[2]
-R[3,2] <- r[1]
+R[1, 2] <- r[1] 
+R[1, 3] <- r[2]
+R[2, 1] <- r[1]
+R[2, 3] <- r[1]
+R[3, 1] <- r[2]
+R[3, 2] <- r[1]
 R
 
 b <- matrix(nrow=3, ncol=1)
-b[1,1] <- r[1]
-b[2,1] <- r[2]
-b[3,1] <- r[3]
+b[1, 1] <- r[1]
+b[2, 1] <- r[2]
+b[3, 1] <- r[3]
 b
 
 phi.hat <- solve(R, b)
@@ -118,3 +118,6 @@ par(mfrow=c(3, 1))
 plot(ar3.process, main='Simulated AR(3)')
 acf(ar3.process, main='ACF')
 pacf(ar3.process, main='PACF')
+
+
+
