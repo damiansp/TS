@@ -2,6 +2,7 @@
 rm(list=ls())
 setwd('~/Learning/R/RLearning/TS/coursera')
 
+library(astsa)
 library(isdals)
 library(ppcor)
 data(bodyfat)
@@ -121,3 +122,27 @@ pacf(ar3.process, main='PACF')
 
 
 
+# Modeling recruitment time series for astsa package as AR process
+data <- rec
+ar.process <- data - mean(data) # 0 mean
+par(mfrow=c(3, 1))
+plot(ar.process, main='Recruitment time series', col=4, lwd=3)
+acf(ar.process, col=2, lwd=3)
+pacf(ar.process, col=3, lwd=3)
+
+p <- 2 # order
+(r <- acf(ar.process, plot=F)$acf[2:(p + 1)])
+
+R <- matrix(1, p, p)
+for (i in 1:p) {
+  for (j in 1:p) {
+    if (i != j) R[i, j] <- r[abs(i - j)]
+  }
+}
+R
+
+(b <- matrix(r, p, 1)) # = t(r)
+(phi.hat <- solve(R, b)[, 1])
+(c0 <- acf(ar.process, type='covariance', plot=F)$acf[1])
+(var.hat <- c0 * (1 - sum(phi.hat*r)))
+(phi0.hat <- mean(data) * (1 - sum(phi.hat)))
