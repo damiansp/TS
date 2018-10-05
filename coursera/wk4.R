@@ -6,6 +6,7 @@ library(astsa)
 library(isdals)
 library(ppcor)
 data(bodyfat)
+data(JohnsonJohnson)
 data(LakeHuron)
 
 
@@ -122,7 +123,7 @@ pacf(ar3.process, main='PACF')
 
 
 
-# Modeling recruitment time series for astsa package as AR process
+# Modeling 'recruitment' time series for astsa package as AR process
 data <- rec
 ar.process <- data - mean(data) # 0 mean
 par(mfrow=c(3, 1))
@@ -146,3 +147,41 @@ R
 (c0 <- acf(ar.process, type='covariance', plot=F)$acf[1])
 (var.hat <- c0 * (1 - sum(phi.hat*r)))
 (phi0.hat <- mean(data) * (1 - sum(phi.hat)))
+
+
+
+# Johnson & Johnson data
+plot(JohnsonJohnson, main='J&J earnings per share', col=4, lwd=3)
+jj.log.return <- diff(log(JohnsonJohnson))
+jj.log.return.centered <- jj.log.return - mean(jj.log.return)
+
+par(mfrow=c(3, 1))
+plot(jj.log.return.centered, 
+     main='Log return (centered) J&J earnings per share')
+acf(jj.log.return.centered, main='ACF')
+pacf(jj.log.return.centered, main='PACF')
+
+p <- 4 # order
+r <- acf(jj.log.return.centered, plot=F)$acf[2:(p + 1)]
+
+R <- matrix(1, p, p)
+for (i in 1:p) {
+  for (j in 1:p) {
+    if (i != j) R[i, j] <- r[abs(i - j)]
+  }
+}
+R
+
+b <- matrix(r, p, 1)
+b
+
+phi.hat <- solve(R, b)[, 1]
+phi.hat
+
+c0 <- acf(jj.log.return.centered, type='covariance', plot=F)$acf[1]
+c0
+var.hat <- c0 * (1 - sum(phi.hat * r))
+var.hat
+
+phi0.hat <- mean(jj.log.return) * (1 - sum(phi.hat))
+phi0.hat
