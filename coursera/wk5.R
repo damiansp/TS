@@ -2,6 +2,7 @@
 rm(list=ls())
 setwd('~/Learning/TS/coursera')
 
+library(astsa)
 library(forecast)
 data(discoveries)
 
@@ -37,3 +38,30 @@ auto.arima(discoveries, d=0, approximation=F) # 2 0 0; d = 0: no evidence of tre
 #        AR(p)                 MA(q)                 ARMA(p, q)
 # ACF    Tails off             Cuts off after lag q  Tails off
 # PACF   Cuts off after lag p  Tails off             Tails off
+
+
+
+# ARIMA(2, 1, 1) Simulation
+phi <- c(0.7, 0.2)
+beta <- 0.5
+sigma <- 3
+m <- 10000
+
+sim <- arima.sim(n=m, list(order=c(2, 1, 1), ar=phi, ma=beta))
+par(mfrow=c(3, 1))
+plot(sim, ylab='', main='Simulated ARIM(2, 1, 1) Process', col=4, lwd=2)
+acf(sim)
+pacf(sim)
+
+diff.sim <- diff(sim)
+plot(diff.sim, col=4, lwd=2)
+acf(diff.sim)
+pacf(diff.sim)
+
+sarima(sim, 2, 1, 1, 0, 0, 0)
+
+auto.arima(sim)
+
+(fit1 <- arima(diff.sim, order=c(4, 0, 0)))
+(fit2 <- arima(diff.sim, order=c(2, 0, 1)))
+(fit3 <- arima(sim, order=c(2, 1, 1)))
