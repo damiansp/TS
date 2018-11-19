@@ -65,3 +65,7 @@ auto.arima(sim)
 (fit1 <- arima(diff.sim, order=c(4, 0, 0)))
 (fit2 <- arima(diff.sim, order=c(2, 0, 1)))
 (fit3 <- arima(sim, order=c(2, 1, 1)))
+
+
+# Ljung-Box (Box-Pierce) Q stat:
+Box.test(sim, lag=log(length(sim)))
