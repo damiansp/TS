@@ -1,9 +1,14 @@
 #=========#=========#=========#=========#=========#=========#=========#=========
 rm(list=ls())
+lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
+        detach,
+        character.only=T,
+        unload=T)
 setwd('~/Learning/TS/coursera')
 
 library(astsa)
 library(forecast)
+#library(TSDL) # not available for 3.5
 data(discoveries)
 
 # AIC
@@ -69,3 +74,10 @@ auto.arima(sim)
 
 # Ljung-Box (Box-Pierce) Q stat:
 Box.test(sim, lag=log(length(sim)))
+
+
+# Applied: Daily Female Births in CA, 1959
+births <- read.csv('data/daily-total-female-births-in-cal.csv')
+births$Date <- as.Date(births$Date, '%Y-%m-%d')
+head(births)
+plot(births, type='l')
