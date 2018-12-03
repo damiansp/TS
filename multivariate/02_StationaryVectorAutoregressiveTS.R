@@ -1,5 +1,9 @@
 #=========#=========#=========#=========#=========#=========#=========#=========
 rm(list=ls())
+lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
+       detach,
+       character.only=T,
+       unload=T)
 setwd('~/Learning/TS/multivariate')
 
 library(MTS)
@@ -60,3 +64,12 @@ para <- cbind(Cov, se, Cov / se)
 
 Sig1 <- t(A) %*% A / (125 - 2)
 Sig1
+
+
+# Demo 2
+dat <- read.table('data/q-gdp-ukcaus.txt', header=T)
+head(dat)
+gdp <- log(dat[, 3:5])
+z <- gdp[2:126, ] - gdp[1:125, ]
+z <- z * 100
+m1 <- VAR(z, p=2) # VAR(2)
