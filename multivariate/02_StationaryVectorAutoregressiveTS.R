@@ -73,3 +73,21 @@ gdp <- log(dat[, 3:5])
 z <- gdp[2:126, ] - gdp[1:125, ]
 z <- z * 100
 m1 <- VAR(z, p=2) # VAR(2)
+
+
+# Demo: Bayesian estimation
+x <- log(dat[, 3:5])
+n <- nrow(x)
+dx <- x[2:n, ] - x[1:(n - 1), ]
+dx <- dx * 100
+lambda <- 0.1
+C <- lambda * diag(7) 
+V0 <- diag(3)
+mm <- BVAR(dx, p=2, C, V0)
+
+
+
+# 6 Order Selection
+
+
+# 1 Sequental Likelihood Ratio Test
