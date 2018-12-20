@@ -5,3 +5,5 @@ lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
        character.only=T,
        unload=T)
 setwd('~/Learning/TS/coursera')
+
+# SARIMA
