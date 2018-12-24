@@ -88,6 +88,10 @@ mm <- BVAR(dx, p=2, C, V0)
 
 
 # 6 Order Selection
-
-
-# 1 Sequental Likelihood Ratio Test
+z1 <- z / 100 # back to original values
+m2 <- VARorder(z1)
+order <- 0:13
+plot(order, m2$aic, type='l', ylim=c(-32, -29))
+lines(order, m2$bic, col=2)
+lines(order, m2$hq, col=4)
+legend('topleft', lty=1, col=c(1, 2, 4), legend=c('AIC', 'BIC', 'HQ'), bty='n')
