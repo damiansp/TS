@@ -95,3 +95,13 @@ plot(order, m2$aic, type='l', ylim=c(-32, -29))
 lines(order, m2$bic, col=2)
 lines(order, m2$hq, col=4)
 legend('topleft', lty=1, col=c(1, 2, 4), legend=c('AIC', 'BIC', 'HQ'), bty='n')
+
+
+
+# 7 Model Checking
+
+
+# 7.2 Multivariate Portmanteau Statistics
+names(m1)
+resi <- m1$residuals # resid ofr VAR(2)
+mq(resi, adj=18) # adj: adjust degrees of freedom: p = 2, k = 3 (# of ts)
