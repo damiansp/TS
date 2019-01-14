@@ -105,3 +105,11 @@ legend('topleft', lty=1, col=c(1, 2, 4), legend=c('AIC', 'BIC', 'HQ'), bty='n')
 names(m1)
 resi <- m1$residuals # resid ofr VAR(2)
 mq(resi, adj=18) # adj: adjust degrees of freedom: p = 2, k = 3 (# of ts)
+
+
+# 7.3 Model Simplification
+m3 <- VARchi(z, p=2)             # default p <= 0.1
+m3 <- VARchi(z, p=2, thres=1.96) # p <= 0.05
+
+m1 <- VAR(z, 2)
+m2 <- refVAR(m1, thres=1.96)
