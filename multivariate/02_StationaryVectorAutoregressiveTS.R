@@ -113,3 +113,6 @@ m3 <- VARchi(z, p=2, thres=1.96) # p <= 0.05
 
 m1 <- VAR(z, 2)
 m2 <- refVAR(m1, thres=1.96)
+
+
+MTSdiag(m2, adj=12)
