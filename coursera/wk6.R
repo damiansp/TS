@@ -185,3 +185,18 @@ plot.ts(c(souv, exp(a$pred)),
         ylab='', 
         col='blue', 
         lwd=3)
+        
+        
+
+# Exponential Smoothing
+rain.data <- scan('http://robjhyndman.com/tsdldata/hurst/precip1.dat', skip=1)
+rain.ts <- ts(rain.data, start=c(1813))
+hist(rain.data, main='Annual Rainfall, London (1813-1912)', xlab='in')
+qqnorm(rain.data)
+qqline(rain.data)
+
+par(mfrow=c(3, 1))
+plot(rain.ts)
+acf(rain.ts)
+pacf(rain.ts)
+auto.arima(rain.ts) # 0 0 0
