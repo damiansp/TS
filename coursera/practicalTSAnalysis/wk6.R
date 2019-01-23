@@ -4,7 +4,7 @@ lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
        detach,
        character.only=T,
        unload=T)
-setwd('~/Learning/TS/coursera')
+setwd('~/Learning/TS/coursera/practicalTSAnalysis')
 
 
 library(astsa)
@@ -42,7 +42,8 @@ for (p in 1:2) {
   	  	               order=c(p-1, d, q-1), 
   	  	               seasonal=list(order=c(P-1, D, Q-1), 
   	  	               period=per))
-  	  	  pval <- Box.test(mod$residuals, lag=log(length(mod$residuals)))$p.value
+  	  	  pval <- Box.test(
+  	  	    mod$residuals, lag=log(length(mod$residuals)))$p.value
   	  	  sse <- sum(mod$residuals^2)
   	  	  cat(p-1, d, q-1, P-1, D, Q-1, per, 'AIC: ', mod$aic, ' SSE: ', sse, 
   	  	     ' p: ', pval, '\n')
@@ -200,3 +201,47 @@ plot(rain.ts)
 acf(rain.ts)
 pacf(rain.ts)
 auto.arima(rain.ts) # 0 0 0
+
+
+
+
+# Forecasting with Smoothing Techniques
+rain.df <- scan('http://robjhyndman.com/tsdldata/hurst/precip1.dat', skip=1)
+head(rain.df)
+rain.ts <- ts(rain.df, start=1813)
+par(mfrow=c(1, 2))
+hist(rain.df, col=5)
+qqnorm(rain.df)
+qqline(rain.df)
+par(mfrow=c(3, 1))
+plot(rain.ts)
+acf(rain.ts)
+pacf(rain.ts)
+
+# Simple exponential smoothing
+generate.forecast <- function(x, alpha) {
+  n <- length(x)
+  forecast <- numeric(n + 1)
+  forecast[1] <- x[1]
+  for (i in 1:n) {
+    forecast[i + 1] <- alpha*x[i] + (1 - alpha)*forecast[i]
+  }
+  forecast
+}
+
+forecast <- generate.forecast(rain.df, alpha=0.2)
+par(mfrow=c(1, 1))
+plot(rain.df, type='l')
+lines(forecast, col=4)
+
+forecast <- generate.forecast(rain.df, alpha=0.024)
+plot(rain.df, type='l')
+lines(forecast, col=4)
+
+hw <- HoltWinters(rain.ts, beta=F, gamma=F)
+plot(hw)
+
+head(lynx)
+plot(lynx)
+hw <- HoltWinters(lynx, beta=F, gamma=F)
+plot(hw)
