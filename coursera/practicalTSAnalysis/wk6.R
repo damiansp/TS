@@ -245,3 +245,14 @@ head(lynx)
 plot(lynx)
 hw <- HoltWinters(lynx, beta=F, gamma=F)
 plot(hw)
+
+
+
+# Volume of money study
+money.df <- read.csv('../data/volume-of-money-abs-definition-m.csv')
+plot(money.df[, 2])
+money.ts <- ts(money.df[, 2], start=c(1960, 2), frequency=12)
+par(mfrow=c(3, 1))
+plot(money.ts)
+acf(money.ts)
+pacf(money.ts)
