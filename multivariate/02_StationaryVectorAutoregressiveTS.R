@@ -116,3 +116,11 @@ m2 <- refVAR(m1, thres=1.96)
 
 
 MTSdiag(m2, adj=12)
+
+
+
+# 9 Forecasting
+VARpred(m1, 8) # 8 steps ahead
+colMeans(z)
+sqrt(apply(z, 2, var)) # sample ses
+
