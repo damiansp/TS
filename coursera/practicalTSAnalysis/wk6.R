@@ -248,11 +248,34 @@ plot(hw)
 
 
 
-# Volume of money study
+# Volume of money study (Holt-Winters)
 money.df <- read.csv('../data/volume-of-money-abs-definition-m.csv')
-plot(money.df[, 2])
 money.ts <- ts(money.df[, 2], start=c(1960, 2), frequency=12)
 par(mfrow=c(3, 1))
 plot(money.ts)
 acf(money.ts)
 pacf(money.ts)
+
+money <- money.df[,2]
+n <- length(money)
+alpha <- 0.7
+beta <- 0.5
+forecast <- level <- trend <- numeric(n)
+level[1] <- money[1]
+trend[1] <- money[2] - money[1]
+forecast[1:2] <- money[1:2]
+for (i in 2:n) {
+  level[i] <- alpha*money[i] + (1 - alpha)*(level[i - 1] + trend[i - 1])
+  trend[i] <- beta*(level[i] - level[i - 1]) + (1 - beta)*trend[i -1]
+  forecast[i + 1] <- level[i] + trend[i]
+}
+
+par(mfrow=c(1, 1))
+plot(1:n, money, xlim=c(1, n + 5), type='l')
+lines(1:n, level, col=4)
+lines(1:n, trend, col=2)
+lines(1:(n+1), forecast, col='darkgrey')
+
+forecast[3:n]
+m <- HoltWinters(money, alpha=alpha, beta=beta, gamma=F)
+m$fitted[,1]
