@@ -274,8 +274,21 @@ par(mfrow=c(1, 1))
 plot(1:n, money, xlim=c(1, n + 5), type='l')
 lines(1:n, level, col=4)
 lines(1:n, trend, col=2)
-lines(1:(n+1), forecast, col='darkgrey')
+lines(1:(n + 1), forecast, col='darkgrey')
 
 forecast[3:n]
 m <- HoltWinters(money, alpha=alpha, beta=beta, gamma=F)
 m$fitted[,1]
+plot(m, main='H-W Fit with hand-picked parameters')
+plot(m, log='y', main='H-W Fit with hand-picked parameters')
+
+m <- HoltWinters(money.ts, gamma=F)
+plot(m, log='y', main='H-W fit with optimal parameters')
+
+
+
+# Air Passengers
+head(AirPassengers)
+m <- HoltWinters(x=log10(AirPassengers), beta=F, gamma=F)
+plot(m) # not so good
+m$SSE
