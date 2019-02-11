@@ -124,3 +124,21 @@ VARpred(m1, 8) # 8 steps ahead
 colMeans(z)
 sqrt(apply(z, 2, var)) # sample ses
 
+
+
+# 10 Impulse Response Functions
+Phi <- m2$Phi # simplified VAR(2) mod
+Sig <- m2$Sigma
+VARirf(Phi, Sig) # orthog innovations
+VARirf(Phi, Sig, orth=F) # orig innovations
+
+
+
+# 11 Forecast Error Variance Decompostion
+m1 <- VAR(z, 2)
+m2 <- refVAR(m1)
+names(m2)
+Phi <- m2$Phi
+Sig <- m2$Sigma
+Theta <- NULL
+FEVdec(Phi, Theta, Sig, lag=5)
