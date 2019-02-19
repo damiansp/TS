@@ -291,4 +291,13 @@ plot(m, log='y', main='H-W fit with optimal parameters')
 head(AirPassengers)
 m <- HoltWinters(x=log10(AirPassengers), beta=F, gamma=F)
 plot(m) # not so good
-m$SSE
+m$SSE # 0.3065
+
+
+AirPass.HW <- HoltWinters(log10(AirPassengers))
+plot(AirPass.HW, xlim=c(1949, 1963))
+AirPass.HW$SSE # 0.0383
+AirPass.HW
+AirPass.fc <- predict(AirPass.HW, n.ahead=12)
+x <- seq(1961, 1962, length=13)[1:12]
+lines(x, AirPass.fc, col=4)
