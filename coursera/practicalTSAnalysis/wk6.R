@@ -295,9 +295,12 @@ m$SSE # 0.3065
 
 
 AirPass.HW <- HoltWinters(log10(AirPassengers))
-plot(AirPass.HW, xlim=c(1949, 1963))
+plot(AirPass.HW, xlim=c(1949, 1963), ylim=c(2, 2.9))
 AirPass.HW$SSE # 0.0383
 AirPass.HW
 AirPass.fc <- predict(AirPass.HW, n.ahead=12)
 x <- seq(1961, 1962, length=13)[1:12]
 lines(x, AirPass.fc, col=4)
+AirPass.fc <- forecast(AirPass.HW)
+AirPass.fc
+plot(AirPass.fc)
