@@ -1,2 +1,5 @@
+Book repo:
+https://github.com/burakbayramli/books/tree/master/An_Introduction_to_Analysis_of_Financial_Data_with_R_Tsay
+
 Book website:
 http://faculty.chicagobooth.edu/ruey.tsay/teaching/mts/sp2015/
