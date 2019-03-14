@@ -25,3 +25,10 @@ par(mfcol=c(2, 1))
 plot(tdx, rtn[, 1], type='l', xlab='year', ylab='d5')
 plot(tdx, rtn[, 2], type='l', xlab='year', ylab='d9')
 ccm(rtn)
+
+
+
+# 2 Specifying VMA Order
+# VMA order specification
+VMAOrder(data$dec1, lag=20)
+
