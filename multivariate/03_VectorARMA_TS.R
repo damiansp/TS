@@ -32,3 +32,16 @@ ccm(rtn)
 # VMA order specification
 VMAOrder(data$dec1, lag=20)
 
+
+
+# 3 Estimation of VMA Models
+
+
+# 3.1 Conditional Likelihood Estimation
+m1 <- VMA(rtn, q=1)
+MTSdiag(m1)
+r1 <- m1$residuals
+mq(r1, adj=4)
+
+
+# 3.2 Exact Likelihood Estimation
