@@ -45,3 +45,5 @@ mq(r1, adj=4)
 
 
 # 3.2 Exact Likelihood Estimation
+m2 <- VMAe(rtn, q=1)
+MTSdiag(m2)
