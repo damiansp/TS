@@ -4,34 +4,38 @@
 #                         #
 ###########################
 rm(list=ls())
-load('~/Desktop/R/Time Series/TimeSeries.RData')
-source('~/Desktop/SM/get.hist.quote2.R', chdir = TRUE)
 options(digits = 5)
-library(MASS)
 
-sp <- get.hist.quote2( '^gspc', #start='2004-01-01', 
-					   quote='AdjClose' )
-sp <- ts(as.ts(sp), start=1991, frequency=365)
-# 1.1 Purpose
+#library(MASS)
+
+data(AirPassengers)
 
 
-
-# 1.2 Time Series
+# 1 Purpose
 
 
 
-# 1.3 R Language
+# 2 Time Series
 
 
-# 1.4 Plots, Trends, and Seasonal Variation
-	# 1.4.1 A flying start: air passenger bookings
-	data(AirPassengers)
-	AP <- AirPassengers
-	AP
-	class(AP)
-	start(AP); end(AP); frequency(AP)
-	summary(AP))
-	plot(AP, ylab="Passengers (in 1000s)")
+
+# 3 R Language
+
+
+
+# 4 Plots, Trends, and Seasonal Variation
+
+
+# 4.1 A flying start: air passenger bookings
+#data(AirPassengers)
+AP <- AirPassengers
+AP
+class(AP) # ts
+start(AP)
+end(AP)
+frequency(AP)
+summary(AP)
+plot(AP, ylab="Passengers (in 1000s)")
 
 	layout(1:2)
 	plot(aggregate(AP))
