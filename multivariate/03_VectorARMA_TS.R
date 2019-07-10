@@ -47,3 +47,16 @@ mq(r1, adj=4)
 # 3.2 Exact Likelihood Estimation
 m2 <- VMAe(rtn, q=1)
 MTSdiag(m2)
+
+#rtn <- cbind(ibm, ko)  # whatever ibm and ko are... 2 dfft stock returns??
+mq(rtn)
+yt <- diffM(rtn)
+mm <- ccm(yt)
+m2 <- VMAe(rtn, q=1, include.mean=F)
+yt <- diffM(rtn)
+m1 <- VMA(yt, q=1, include.mean=F)
+m2 <- VMAe(yt, q=1, include.mean=F)
+t1 <- m1$Theta
+t2 <- m2$Theta
+eigen(t1)
+eigen(t2)
