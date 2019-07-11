@@ -1,0 +1,4 @@
+Install authors' packages:
+> library(devtools)
+> devtools::install_github("nwfsc-timeseries/atsalibrary")
+
