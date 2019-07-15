@@ -1,7 +1,10 @@
 #---------#---------#---------#---------#---------#---------#---------#---------
 rm(list=ls())
-#detach('package:dplyr')
-search()
+lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
+       detach,
+       character.only=T,
+       unload=T)
+setwd('~/Learning/TS/coIntegrated')
 
 library(forecast)
 library(urca)
@@ -11,6 +14,14 @@ op <- par(no.readonly=T)
 
 
 # 2. AR(p) TS Process
+simulate.AR1 <- function(n, intercept, coef, sd.noise) {
+  x <- numeric(n)
+  x[1] <- 1
+  e <- rnorm(n, sd=sd.noise)
+  for (t in 2:n) { x[t] <- intercept + coef*x[t - 1] + e[t] }
+  plot(x, type='l')
+}
+
 # Simulation of AR(1) process with φ = 0.9
 N <- 100
 PHI <- 0.9
@@ -19,6 +30,7 @@ y <- arima.sim(n=N, list(ar=PHI), innov=rnorm(N))
 plot.ts(y, ylab='')
 acf(y, main='Autocorrelations', ylab='', ylim=c(-1, 1), ci.col=2)
 pacf(y, main='Partial Autocorrelations', ylab='', ylim=c(-1, 1), ci.col=2)
+
 
 
 
