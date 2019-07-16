@@ -4,22 +4,12 @@
 #                         #
 ###########################
 rm(list=ls())
-options(digits = 5)
+setwd('~/Learning/TS/basic')
+options(digits=5)
 
-#library(MASS)
+library(MASS)
 
 data(AirPassengers)
-
-
-# 1 Purpose
-
-
-
-# 2 Time Series
-
-
-
-# 3 R Language
 
 
 
@@ -37,36 +27,34 @@ frequency(AP)
 summary(AP)
 plot(AP, ylab="Passengers (in 1000s)")
 
-	layout(1:2)
-	plot(aggregate(AP))
-	boxplot(AP ~ cycle(AP))
+layout(1:2)
+plot(aggregate(AP))
+boxplot(AP ~ cycle(AP))
 	
-	layout(1:2)
-	plot(sp)
-	# for the aggregate div by 250 as the ~no of market days per year
-	plot(aggregate(sp, na.rm=T)/250, xlim=c(2004, 2015 + 144/365)) 
 
-	# 1.4.2 Unemployment: Maine
-	Maine.month <- read.table( 
-		"http://staff.elena.aut.ac.nz/Paul-Cowpertwait/ts/Maine.dat", 
-		header=T
-	)
-	attach(Maine.month)
-	class(Maine.month); head(Maine.month)
-	Maine.month.ts <- ts(unemploy, start=c(1996, 1), freq=12)
-	Maine.annual.ts <- aggregate(Maine.month.ts) / 12
-	layout(1:2)
-	plot(Maine.month.ts, ylab="% Unemployed")
-	plot(Maine.annual.ts, ylab="% Unemployed")
-	Maine.Feb <- window(Maine.month.ts, start=c(1996,2), freq=T)
-	Maine.Aug <- window(Maine.month.ts, start=c(1996,8), freq=T)
-	(Feb.ratio <- mean(Maine.Feb) / mean(Maine.month.ts))
-	(Aug.ratio <- mean(Maine.Aug) / mean(Maine.month.ts))
+# 4.2 Unemployment: Maine
+Maine.month <- read.table( 
+  'https://raw.githubusercontent.com/svkerr/R_Files/master/TimeSeries/Maine.dat', header=T)
+class(Maine.month)
+head(Maine.month)
+Maine.month.ts <- ts(Maine.month$unemploy, start=c(1996, 1), freq=12)
+Maine.annual.ts <- aggregate(Maine.month.ts) / 12
+	
+layout(1:2)
+plot(Maine.month.ts, ylab="% Unemployed")
+plot(Maine.annual.ts, ylab="% Unemployed")
+Maine.Feb <- window(Maine.month.ts, start=c(1996,2), freq=T)
+Maine.Aug <- window(Maine.month.ts, start=c(1996,8), freq=T)
+(Feb.ratio <- mean(Maine.Feb) / mean(Maine.month.ts))
+(Aug.ratio <- mean(Maine.Aug) / mean(Maine.month.ts))
 
-	US.month <- read.table( 
-		"http://staff.elena.aut.ac.nz/Paul-Cowpertwait/ts/USunemp.dat", 
-		header=T 
-	)
+US.month <- read.table( 
+  "https://raw.githubusercontent.com/dallascard/Introductory_Time_Series_with_R_datasets/master/USunemp.dat", header=T)
+
+
+
+
+
 	attach(US.month)
 	US.month.ts <- ts(USun, start=c(1996, 1), end=c(2006,10), freq=12)
 	layout(1)

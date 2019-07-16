@@ -1,5 +1,6 @@
 #---------#---------#---------#---------#---------#---------#---------#---------
 rm(list=ls())
+setwd('~/Learning/TS/coIntegrated')
 #detach('package:dplyr')
 search()
 
