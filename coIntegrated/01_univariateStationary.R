@@ -1,5 +1,6 @@
 #---------#---------#---------#---------#---------#---------#---------#---------
 rm(list=ls())
+#detach('package:dplyr')
 lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
        detach,
        character.only=T,
