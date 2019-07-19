@@ -36,6 +36,7 @@ pacf(y, main='Partial Autocorrelations', ylab='', ylim=c(-1, 1), ci.col=2)
 
 
 # 3. MA(q) Time Series Process
+# Code 1.2: Estimation of AR(2) with phi1 = 0.6, phi2 = -0.28
 series <- rnorm(1000)
 y.st <- filter(series, filter=c(0.6, -0.28), method='recursive')
 par(mfrow=c(2, 1))
@@ -44,7 +45,7 @@ plot(y.st, type='l')
 ar2.st <- arima(y.st, c(2, 0, 0), include.mean=F, transform.pars=F, method='ML')
 ar2.st$coef
 roots <- polyroot(c(1, -ar2.st$coef))
-Mod(roots)
+Mod(roots) # > 1 (equiv to an AR(Inf) process)
 root.comp <- Im(roots)
 root.real <- Re(roots)
 x <- seq(-1, 1, length=1000)
