@@ -33,7 +33,8 @@ boxplot(AP ~ cycle(AP))
 
 # 4.2 Unemployment: Maine
 Maine.month <- read.table( 
-  'https://raw.githubusercontent.com/svkerr/R_Files/master/TimeSeries/Maine.dat', header=T)
+  'https://raw.githubusercontent.com/svkerr/R_Files/master/TimeSeries/Maine.dat', 
+  header=T)
 class(Maine.month)
 head(Maine.month)
 Maine.month.ts <- ts(Maine.month$unemploy, start=c(1996, 1), freq=12)
@@ -48,40 +49,36 @@ Maine.Aug <- window(Maine.month.ts, start=c(1996,8), freq=T)
 (Aug.ratio <- mean(Maine.Aug) / mean(Maine.month.ts))
 
 US.month <- read.table( 
-  "https://raw.githubusercontent.com/dallascard/Introductory_Time_Series_with_R_datasets/master/USunemp.dat", header=T)
+  "https://raw.githubusercontent.com/dallascard/Introductory_Time_Series_with_R_datasets/master/USunemp.dat", 
+  header=T)
+US.month.ts <- ts(US.month$USun, start=c(1996, 1), end=c(2006,10), freq=12)
+layout(1)
+plot(US.month.ts, ylab="% Unemployed", ylim=range(Maine.month.ts))
+lines(Maine.month.ts, col=2)
+lines(Maine.annual.ts, col=2)
 
+	
+# 4.3 Multiple time series: electricity, beer, and chocolate data
+CBE <- read.table(
+  "https://raw.githubusercontent.com/dallascard/Introductory_Time_Series_with_R_datasets/master/cbe.dat", 
+  header=T)
+head(CBE)
+class(CBE)
+Elec.ts <- ts(CBE[,3], start=1958, freq=12)
+Beer.ts <- ts(CBE[,2], start=1958, freq=12)
+Choc.ts <- ts(CBE[,1], start=1958, freq=12)
+plot(cbind(Elec.ts, Beer.ts, Choc.ts))
 
-
-
-
-	attach(US.month)
-	US.month.ts <- ts(USun, start=c(1996, 1), end=c(2006,10), freq=12)
-	layout(1)
-	plot(US.month.ts, ylab="% Unemployed", ylim=range(Maine.month.ts))
-	lines(Maine.month.ts, col=2, lty=2)
-	lines(Maine.annual.ts, col=2)
-
-	# 1.4.3 Multiple time series: electricity, beer, and chocolate data
-	CBE <- read.table(	
-		"http://staff.elena.aut.ac.nz/Paul-Cowpertwait/ts/cbe.dat", header=T
-	)
-	head(CBE)
-	class(CBE)
-	Elec.ts <- ts(CBE[,3], start=1958, freq=12)
-	Beer.ts <- ts(CBE[,2], start=1958, freq=12)
-	Choc.ts <- ts(CBE[,1], start=1958, freq=12)
-	plot(cbind(Elec.ts, Beer.ts, Choc.ts))
-
-	(AP.elec <- ts.intersect(AP, Elec.ts))
-	AP <- AP.elec[,1]; Elec <- AP.elec[,2]
-	layout(1:2)
-	plot(AP, main="", ylab='Air Passengers (1000s)')
-	plot(Elec, main="", ylab="Electricity Production (MkWhr)")
-	layout(1)
-	plot( as.vector(AP), as.vector(Elec), xlab="Air Passengers", 	
-		  ylab="Electricity" )
-	abline(lm(Elec~AP))
-	cor(AP, Elec)
+(AP.elec <- ts.intersect(AP, Elec.ts))
+AP <- AP.elec[, 1]
+Elec <- AP.elec[, 2]
+layout(1:2)
+plot(AP, main="", ylab='Air Passengers (1000s)')
+plot(Elec, main="", ylab="Electricity Production (MkWhr)")
+layout(1)
+plot(as.vector(AP), as.vector(Elec), xlab="Air Passengers", ylab="Electricity" )
+abline(lm(Elec ~ AP))
+cor(AP, Elec)
 
 	# 1.4.4 Quarterly exchange rate: GBP to NZ dollar
 	Z <- read.table(
