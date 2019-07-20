@@ -80,25 +80,25 @@ plot(as.vector(AP), as.vector(Elec), xlab="Air Passengers", ylab="Electricity" )
 abline(lm(Elec ~ AP))
 cor(AP, Elec)
 
-	# 1.4.4 Quarterly exchange rate: GBP to NZ dollar
-	Z <- read.table(
-		"http://staff.elena.aut.ac.nz/Paul-Cowpertwait/ts/pounds_nz.dat", 
-		header=T
-	)
-	head(Z)
-	Z.ts <- ts(Z, st=1991, fr=4)
-	plot(Z.ts, xlab='Year', ylab='NZ $ / GB Pound')
 	
-	Z.92.96 <- window(Z.ts, start=c(1992, 1), end=c(1996,1))
-	Z.96.98 <- window(Z.ts, start=c(1996, 1), end=c(1998,1))
-	layout(1:2)
-	plot(Z.92.96)
-	plot(Z.96.98)
+# 4.4 Quarterly exchange rate: GBP to NZ dollar
+Z <- read.table(
+  "https://raw.githubusercontent.com/dallascard/Introductory_Time_Series_with_R_datasets/master/pounds_nz.dat", 
+  header=T)
+head(Z)
+Z.ts <- ts(Z, st=1991, fr=4)
+plot(Z.ts, xlab='Year', ylab='NZ $ / GB Pound')
+	
+Z.92.96 <- window(Z.ts, start=c(1992, 1), end=c(1996,1))
+Z.96.98 <- window(Z.ts, start=c(1996, 1), end=c(1998,1))
+layout(1:2)
+plot(Z.92.96)
+plot(Z.96.98)
 
-	# 1.4.5 Global temperature series
-	Global <- scan( 
-		"http://staff.elena.aut.ac.nz/Paul-Cowpertwait/ts/global.dat"
-	)
+
+# 4.5 Global temperature series
+Global <- scan( 
+  'https://raw.githubusercontent.com/dallascard/Introductory_Time_Series_with_R_datasets/master/global.dat')
 	Global.ts <- ts(Global, st=c(1856,1), end=c(2005,12), fr=12)
 	Global.annual <- aggregate(Global.ts, FUN=mean)
 	par(mfrow=c(2,1))
