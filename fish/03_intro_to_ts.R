@@ -15,3 +15,9 @@ data(WWWusage)
 # 1. Examples of TS
 plot.ts(WWWusage)
 plot.ts(lynx)
+
+
+# 6. Classical Decomposition
+ap <- AirPassengers
+plot(decompose(ap))
+plot(decompose(log(ap)))
