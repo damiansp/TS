@@ -11,7 +11,7 @@ library(forecast)
 library(urca)
 data(npext)
 
-op <- par(no.readonly=T)
+#op <- par(no.readonly=T)
 
 
 # 2. AR(p) TS Process
@@ -77,29 +77,31 @@ par(op)
 
 # Tentative ARMA(2, 0)
 arma20 <- arima(y, order=c(2, 0, 0))
-ll20 <- logLik(arma20)
-aic20 <- arma20$aic
+ll20 <- logLik(arma20)     # -48.59
+aic20 <- arma20$aic        # 105.18
 res20 <- residuals(arma20)
 # Test assumption of uncorrelatedness
-Box.test(res20, lag=20, type='Ljung-Box')
-shapiro.test(res20)
+Box.test(res20, lag=20, type='Ljung-Box') # p = 0.35 (uncorrelated)
+shapiro.test(res20)                       # resids normal
+qqnorm(res20)
+qqline(res20)
 
 # alternate specifications
 arma30 <- arima(y, order=c(3, 0, 0))
-ll30 <- logLik(arma30)
-aic30 <- arma30$aic # better
+ll30 <- logLik(arma30)     # -47.465 (better)
+aic30 <- arma30$aic        # 104.94 (better)
 lrtest <- as.numeric(2*(ll30 - ll20))
-chi.pval <- pchisq(lrtest, df=1, lower.tail=F) # but not signif better than 2, 0
+chi.pval <- pchisq(lrtest, df=1, lower.tail=F) # 0.134: prefer simpler 2, 0
 
 arma11 <- arima(y, order=c(1, 0, 1))
-ll11 <- logLik(arma11)
-aic11 <- arma11$aic # better still
-tsdiag(arma11)
+ll11 <- logLik(arma11)     # -46.597 (better still)
+aic11 <- arma11$aic        # 101.01 (better still)
+tsdiag(arma11)             # looks good
 res11 <- residuals(arma11)
-Box.test(res11, lag=20, type='Ljung-Box')
-shapiro.test(res11)
+Box.test(res11, lag=20, type='Ljung-Box') # not correlated
+shapiro.test(res11)                       # normal
 
-auto.arima(y, max.p=3, max.q=3, start.p=1, start.q=0, ic='aic')
+auto.arima(y, max.p=3, max.q=3, start.p=1, start.q=0, ic='aic') # ARMA(1, 1)
 
 # Forecast
 arma11.pred <- predict(arma11, n.ahead=10)
