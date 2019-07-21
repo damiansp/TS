@@ -89,8 +89,8 @@ head(Z)
 Z.ts <- ts(Z, st=1991, fr=4)
 plot(Z.ts, xlab='Year', ylab='NZ $ / GB Pound')
 	
-Z.92.96 <- window(Z.ts, start=c(1992, 1), end=c(1996,1))
-Z.96.98 <- window(Z.ts, start=c(1996, 1), end=c(1998,1))
+Z.92.96 <- window(Z.ts, start=c(1992, 1), end=c(1996, 1))
+Z.96.98 <- window(Z.ts, start=c(1996, 1), end=c(1998, 1))
 layout(1:2)
 plot(Z.92.96)
 plot(Z.96.98)
@@ -99,23 +99,23 @@ plot(Z.96.98)
 # 4.5 Global temperature series
 Global <- scan( 
   'https://raw.githubusercontent.com/dallascard/Introductory_Time_Series_with_R_datasets/master/global.dat')
-	Global.ts <- ts(Global, st=c(1856,1), end=c(2005,12), fr=12)
-	Global.annual <- aggregate(Global.ts, FUN=mean)
-	par(mfrow=c(2,1))
-	plot(Global.ts) 
-	plot(Global.annual)
+Global.ts <- ts(Global, st=c(1856, 1), end=c(2005, 12), fr=12)
+Global.annual <- aggregate(Global.ts, FUN=mean)
+par(mfrow=c(2,1))
+plot(Global.ts) 
+plot(Global.annual)
 
-	New.series <- window(Global.ts, start=c(1970,1), end=c(2005,12))
-	New.time <- time(New.series)	# returns a numeric equivalent for ea 
-									# time stamp (e.g. Jan 1970 = 1970.000; 
-									# Feb 1970 = 1970.083, etc)
-	par(mfrow=c(1,1))
-	plot(New.series)
-	abline(lm(New.series ~ New.time))
+New.series <- window(Global.ts, start=c(1970, 1), end=c(2005, 12))
+# returns a numeric equivalent for ea time stamp (e.g. Jan 1970 = 1970.000; Feb 
+# 1970 = 1970.083, etc)
+New.time <- time(New.series)
+par(mfrow=c(1,1))
+plot(New.series)
+abline(lm(New.series ~ New.time), col=2)
 
 
 
-# 1.5 Decomposition of a Series
+# 5 Decomposition of a Series
 	# 1.5.5 Decompostion in R
 	plot(decompose(Elec.ts))
 	plot(decompose(Elec.ts, type="mult"))	#cf. error term
