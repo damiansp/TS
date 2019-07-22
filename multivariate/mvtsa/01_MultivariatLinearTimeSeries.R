@@ -19,11 +19,13 @@ ccm(x)
 
 
 # 5. Testing Zero Cross-Correlations
-dat <- read.table('data/q-gdpunemp.txt', header=T)
+dat <- read.table(
+  'https://faculty.chicagobooth.edu/ruey.tsay/teaching/mts/sp2015/q-gdpunemp.txt', 
+  header=T)
 head(dat)
 
 x <- cbind(diff(dat$gdp), diff(dat$rate))
-mq(x, lag=10) # series not independent for any lag
+mq(x, lag=10) # series not independent for any lag; siginf CC at all lags (m 1-10)
 
 # Sim study
 sig <- diag(3)
