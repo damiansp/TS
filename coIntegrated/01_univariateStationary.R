@@ -103,20 +103,26 @@ shapiro.test(res11)                       # normal
 
 auto.arima(y, max.p=3, max.q=3, start.p=1, start.q=0, ic='aic') # ARMA(1, 1)
 
+
+# Code 1.4: Box-Jenkins: Preds of US Unemployment Rate
 # Forecast
 arma11.pred <- predict(arma11, n.ahead=10)
 pred <- ts(c(rep(NA, length(y) - 1), y[length(y)], arma11.pred$pred),
            start=1909,
            freq=1)
 upper <- ts(c(rep(NA, length(y) - 1), 
-              y[length(y)], arma11.pred$pred + 1.96*arma11.pred$se),
+              y[length(y)], 
+              arma11.pred$pred + 1.96*arma11.pred$se),
             start=1909,
             freq=1)
 lower <- ts(c(rep(NA, length(y) - 1), 
-              y[length(y)], arma11.pred$pred - 1.96*arma11.pred$se),
+              y[length(y)], 
+              arma11.pred$pred - 1.96*arma11.pred$se),
             start=1909,
             freq=1)
 observed <- ts(c(y, rep(NA, 10)), start=1909, freq=1)
+
+par(mfrow=c(1, 1))
 plot(observed, type='l', ylab='log(unemployment)', xlab='')
 lines(pred, col=4)
 lines(upper, col=2, lty=4)
