@@ -116,48 +116,58 @@ abline(lm(New.series ~ New.time), col=2)
 
 
 # 5 Decomposition of a Series
-	# 1.5.5 Decompostion in R
-	plot(decompose(Elec.ts))
-	plot(decompose(Elec.ts, type="mult"))	#cf. error term
-	Elec.decom <- decompose(Elec.ts, type="mult")
-	plot(Elec.decom)	#same as plot(decompose(Elec.ts, type='mult))
-	Trend <- Elec.decom$trend
-	Seasonal <- Elec.decom$seasonal
-	par(mfrow=c(2,1))
-	ts.plot( cbind(Trend, Trend*Seasonal, Elec.ts), col=1:3, 
-			 main="Multiplicative Model" )	#mult model
-	legend( 'topleft', legend=c('Trend','Estimated','Observed'), 
-			lty=c(1,1,1), col=1:3, bty='n' )
-	ts.plot( cbind(Trend, Trend+(decompose(Elec.ts)$seasonal), Elec.ts), 
-			 col=1:3, main='Additive Model' )	#add in additive model
-	legend( 'topleft', legend=c('Trend','Estimated','Observed'), 
-			lty=c(1,1,1), col=1:3, bty='n' )
-	plot(stl(Elec.ts, 12))
 
 
-#===================#
-#					#
-#	1.7	Exercises	#
-#					#
-#===================#
+# 5.5 Decompostion in R
+plot(decompose(Elec.ts))
+plot(decompose(Elec.ts, type="mult"))	# cf. error term
+Elec.decom <- decompose(Elec.ts, type="mult")
+plot(Elec.decom)	# same as plot(decompose(Elec.ts, type='mult))
+Trend <- Elec.decom$trend
+Seasonal <- Elec.decom$seasonal
+par(mfrow=c(2,1))
+ts.plot(cbind(Trend, Trend * Seasonal, Elec.ts), 
+        col=c(1, 2, 4), 
+        main='Multiplicative Model')
+legend('topleft', 
+       legend=c('Trend','Estimated','Observed'), 
+       lty=1, 
+       col=c(1, 2, 4), 
+       bty='n')
+ts.plot(cbind(Trend, Trend + (decompose(Elec.ts)$seasonal), Elec.ts), 
+	    col=c(1, 2, 4), 
+	    main='Additive Model')
+legend('topleft', 
+       legend=c('Trend','Estimated','Observed'), 
+       lty=1, 
+       col=c(1, 2, 4), 
+       bty='n')
+plot(stl(Elec.ts, 12))
+
+
+
+# 7. Exercises
+
 
 # 1.
-#	a. Produce a time plot of the beer data
-	plot(Beer.ts)
-	# Plot the aggregated annual series...
-	plot(aggregate(Beer.ts))
-	# ...and a boxplot that summarize the observed vals for ea season
-	boxplot(Beer.ts ~cycle(Beer.ts))	# recal that Dec is summer in Austral
+# a. Produce a time plot of the beer data
+layout(matrix(c(1, 1, 2, 3), 2, 2, byrow=T))
+plot(Beer.ts)
+# Plot the aggregated annual series...
+plot(aggregate(Beer.ts))
+# ...and a boxplot that summarize the observed vals for ea season
+boxplot(Beer.ts ~cycle(Beer.ts))	# recal that Dec is summer in Austral
 	
-#	b. Decompose the series into the component trend, seasonal effect and
-	# resids and plot
-	plot(stl(Beer.ts, 12)) # OR:
-	plot(decompose(Beer.ts))
-	# Produce a plot of the tren with a superimposed seasonal effect
-	beer.decomp <- decompose(Beer.ts)
-	beer.trend <- beer.decomp$trend
-	beer.seasonal <- beer.decomp$seasonal
-	ts.plot(cbind(beer.trend, beer.trend + beer.seasonal, Beer.ts), col=1:3)
+# b. Decompose the series into the component trend, seasonal effect and
+# resids and plot
+plot(stl(Beer.ts, 12)) # OR:
+plot(decompose(Beer.ts))
+# Produce a plot of the trend with a superimposed seasonal effect
+beer.decomp <- decompose(Beer.ts)
+beer.trend <- beer.decomp$trend
+beer.seasonal <- beer.decomp$seasonal
+par(mfrow=c(1, 1))
+ts.plot(cbind(beer.trend, beer.trend + beer.seasonal, Beer.ts), col=c(1, 2, 4))
 	
 
 # 2. Price Indices
@@ -168,21 +178,21 @@ q4	  <- c(0.5,   1500,         20,             2,       1) # quantity t=4
 p4    <- c(20000, 1.60,         60,             120,     360) # unit price
 
 laspeyere.price.index <- function(q0, p0, pt) {
-	sum(q0 * pt) / sum(q0 * p0)
+  sum(q0 * pt) / sum(q0 * p0)
 }
 
 LI4 <- laspeyere.price.index(q0, p0, p4)	# 1.36
 
 
-# 3 Paasche Price Index
+# 3. Paasche Price Index
 paasche.price.index <- function(qt, p0, pt) {
-	sum(qt * pt) / sum(qt / p0)
+  sum(qt * pt) / sum(qt / p0)
 }
 
 PI4 <- paasche.price.index(q4, p0, p4)		# 7.57
 
 irving.fisher.price.index <- function(q0, p0, qt, pt) {
-	sqrt(laspeyere.price.index(q0, p0, p4) * paasche.price.index(qt, p0, pt))
+  sqrt(laspeyere.price.index(q0, p0, p4) * paasche.price.index(qt, p0, pt))
 }
 
 (IFI4 <- irving.fisher.price.index(q0, p0, q4, p4))	# 3.21
@@ -190,25 +200,25 @@ irving.fisher.price.index <- function(q0, p0, qt, pt) {
 
 # 4. Tyler series expansion
 n <- 100
-y <- rnorm(n, mu, sigma)
 mu <- 4
+y <- rnorm(n, mu, sigma)
 sigma <- 3
 
 # Tyler expansion for e^x
 tyler.exp <- function(y, mu, iters) {
-	output <- exp(mu)
-	for (i in 1:iters) {
-		term <- (y[i] - mu)^i / factorial(i)
-	}
-	output <- output + exp(mu) * term
-	return (output)
+  output <- exp(mu)
+  for (i in 1:iters) {
+    term <- (y[i] - mu)^i / factorial(i)
+  }
+  output <- output + exp(mu) * term
+  return (output)
 }
 
 is <- 1:100
 expansion <- numeric(100)
 
 for (i in is) {
-	expansion[i] <- tyler.exp(y, mu, i)
+  expansion[i] <- tyler.exp(y, mu, i)
 }
 
 is <- c(0, is)
@@ -217,43 +227,4 @@ expansion <- c(exp(mu), expansion)
 plot(expansion ~ is, type='l')
 abline(h=exp(mean(y)), col=2)
 
-save.image(file="~/Desktop/R/Time Series/TimeSeries.RData")
-
-
-
-# Playing with S&P data
-plot(sp)
-sp.daily.vals <- (as.vector(sp[!is.na(sp)]))
-n <- length(sp.daily.vals)
-sp.daily.change <- sp.daily.vals[2:n] / sp.daily.vals[1:(n - 1)]
-plot(sp, xlim=c(1991, 2019), ylim=c(0, 5000))
-iters <- 1000
-n.forecast <- 1000
-lastDate <- attr(sp, 'tsp')[2]
-dates <- seq(lastDate, lastDate + 4, length=n.forecast)
-
-M <- matrix(NA, nrow=n.forecast, ncol=iters)
-for (i in 1:iters) {
-	sp.forecast <- numeric(n.forecast)
-	daily.changes <- sample(sp.daily.change, n.forecast, T)
-	sp.forecast[1] <- sp.daily.vals[n] * daily.changes[1]
-	for (p in 2:n.forecast) {
-		sp.forecast[p] <- sp.forecast[p - 1] * daily.changes[p]
-	}
-	lines(sp.forecast ~ dates, col=rgb(0,0,1,0.02))
-	M[, i] <- sp.forecast
-}
-qs <- apply(M, 1, quantile, probs=c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
-lines(qs[1,] ~ dates, col=1, lty=1)
-lines(qs[4,] ~ dates, col=1, lty=1)
-lines(qs[7,] ~ dates, col=1, lty=1)
-
-lines(qs[2,] ~ dates, col=2, lty=3)
-lines(qs[6,] ~ dates, col=2, lty=3)
-
-lines(qs[3,] ~ dates, col=2, lty=2)
-lines(qs[5,] ~ dates, col=2, lty=2)
-
-
-par(mfrow=c(1,1))
-plot(decompose(sp.daily.vals))
+#save.image(file="~/Desktop/R/Time Series/TimeSeries.RData")
