@@ -39,3 +39,44 @@ dim(dat.U)
 
 plot(dat.I, main='')
 plot(dat.U, main='')
+
+
+
+# 2. Decomposition of Time Series
+
+
+# 2.1 Estimating Trends
+fltr <- c(0.5, rep(1, times=11), 0.5) / 12   # 12 step MA window
+co2.trend <- filter(co2, filter=fltr, method='convo', sides=2)
+plot.ts(co2.trend, ylab='Trend')
+
+
+# 2.2 Estimating Seasonal Effects
+co2.1T <- co2 - co2.trend
+plot.ts(co2.1T, ylab='Seasonal Effect', xlab='Month')
+
+# Avg
+ll <- length(co2.1T)
+ff <- frequency(co2.1T)
+periods <- trunc(ll / ff)
+index <- seq(1, ll, by=ff) - 1
+mm <- numeric(ff)
+for (i in 1:ff) { mm[i] <- mean(co2.1T[index + i], na.rm=T) }
+mm <- mm - mean(mm)
+plot.ts(mm, ylab='Average Seasonal Effect', xlab='Month')
+
+# Combine trend and seasonal
+co2.seas <- ts(rep(mm, periods + 1)[seq(ll)], start=start(co2.1T), frequency=ff)
+plot.ts(co2.seas)
+
+
+# 2.3 Complete the Decomopostion Model
+co2.err <- co2 - co2.trend - co2.seas
+plot(cbind(co2, co2.trend, co2.seas, co2.err), main='')#, yax.flip=T)
+
+
+
+# 2.4 Using decompose() 
+co2.decomp <- decompose(co2)
+str(co2.decomp)
+plot(co2.decomp)
