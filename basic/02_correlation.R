@@ -1,41 +1,37 @@
-#====================#
-#                    #
-#  Ch 2 Correlation  #
-#                    #
-#====================#
+#=========#=========#=========#=========#=========#=========#=========#=========
 rm(list=ls())
-load('~/Desktop/R/Time Series/TimeSeries.RData')
-source('~/Desktop/SM/get.hist.quote2.R', chdir = TRUE)
-options(digits = 5)
+lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
+       detach,
+       character.only=T,
+       unload=T)
+setwd('~/Learning/TS/basic')
+options(digits=5)
 library(MASS)
 
-sp <- get.hist.quote2( '^gspc', #start='2004-01-01', 
-					   quote='AdjClose' )
-sp <- ts(as.ts(sp), start=1991, frequency=365)
-
-#data(AirPassengers)
 
 
-# 2.1 Purpose
+# 1 Purpose
 
 
-# 2.2 Expectation and the Ensemble
-	# 2.2.1 Expected value
-	Herald.dat <- read.table(
-			"http://staff.elena.aut.ac.nz/Paul-Cowpertwait/ts/Herald.dat",
-			header=T )
-	attach(Herald.dat)
 
-	x <- CO
-	y <- Benzoa
-	n <- length(x)
-	sum((x - mean(x))*(y - mean(y))) / (n - 1)	# 5.51, same as:
-	cov(x, y)	# abbreviated form of previous = 5.51
+# 2 Expectation and the Ensemble
 
-	cov(x, y) / (sd(x)*sd(y))	#0.355, same as:
-	cor(x, y)
+
+# 2.1 Expected value
+herald <- read.table(
+  "https://raw.githubusercontent.com/dallascard/Introductory_Time_Series_with_R_datasets/master/Herald.dat", 
+  header=T )
+
+x <- herald$CO
+y <- herald$Benzoa
+n <- length(x)
+sum((x - mean(x))*(y - mean(y))) / (n - 1)	# 5.51, same as:
+cov(x, y)	# abbreviated form of previous = 5.51
+cov(x, y) / (sd(x)*sd(y))	#0.355, same as:
+cor(x, y)
 	
-	# 2.2.5 Autocorrelation
+
+# 2.5 Autocorrelation
 	wave.dat <- read.table( 
 				 "http://staff.elena.aut.ac.nz/Paul-Cowpertwait/ts/wave.dat", 
 				 header=T
