@@ -72,3 +72,24 @@ class(var2c.arch)   # ""
 class(var2c.norm)   # ""
 methods(class='varcheck') # plot, print
 args(vars:::plot.varcheck)
+
+# Code 2.3: Empirical fluctuation process
+reccumsum <- stability(varsimest, type='OLS-CUSUM')
+plot(reccumsum)
+fluctuation <- stability(varsimest, type='fluctuation')
+plot(fluctuation)
+
+
+# 2.3 Causality Analysis
+(var.causal <- causality(varsimest, cause='y2'))
+# Granger causality likely (reject H0); inst. caus. unlikely (cannot reject H0)
+
+
+# 2.4 Forecasting
+args(vars:::predict.varest)
+preds <- predict(varsimest, n.ahead=25, ci=0.95)
+class(preds)
+plot(preds, names='y1')
+args(fanchart)
+fanchart(preds, names='y2')
+fanchart(preds, names=c('y1', 'y2'))
