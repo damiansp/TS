@@ -80,3 +80,24 @@ plot(cbind(co2, co2.trend, co2.seas, co2.err), main='')#, yax.flip=T)
 co2.decomp <- decompose(co2)
 str(co2.decomp)
 plot(co2.decomp)
+
+
+
+# 3. Differencing to Remove a Trend or Seasonal Effects
+
+
+# 3.1. Using the diff() Function
+co2.D2 <- diff(co2, differences=2)
+par(mfrow=c(3, 1))
+plot(co2.D2, ylab=expression(paste(nabla^2, 'CO'[2])))
+acf(co2.D2)
+pacf(co2.D2)
+# No trend, but still has obvious seasonal effect
+co2.D2D12 <- diff(co2.D2, lag=12)
+plot(co2.D2D12)
+acf(co2.D2D12)
+pacf(co2.D2D12)
+
+
+
+# 4. Correlation Within and Among Time Series
