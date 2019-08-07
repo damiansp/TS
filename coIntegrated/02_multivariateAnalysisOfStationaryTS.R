@@ -93,3 +93,24 @@ plot(preds, names='y1')
 args(fanchart)
 fanchart(preds, names='y2')
 fanchart(preds, names=c('y1', 'y2'))
+
+
+# 2.5 Impulse Response Functions
+# Code 2.6 IRA of VAR-process
+irf.y1 <- irf(varsimest, 
+              impulse='y1', 
+              response='y2', 
+              n.ahead=10, 
+              ortho=F, 
+              cumualtive=F, 
+              boot=T)
+irf.y2 <- irf(varsimest,
+              impulse='y2', 
+              response='y1', 
+              n.ahead=10, 
+              ortho=F, 
+              cumualtive=F, 
+              boot=T)
+args(vars:::plot.varirf)
+plot(irf.y1)
+plot(irf.y2)
