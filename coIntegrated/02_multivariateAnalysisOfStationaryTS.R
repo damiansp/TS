@@ -114,3 +114,11 @@ irf.y2 <- irf(varsimest,
 args(vars:::plot.varirf)
 plot(irf.y1)
 plot(irf.y2)
+
+
+# 2.6 Forecast Error Variance Decomposition (FEVD)
+# Code 2.7
+fevd.var2 <- fevd(varsimest, n.ahead=10)
+args(vars:::plot.varfevd)
+plot(fevd.var2, addbars=2, col=c(1, 2))
+
