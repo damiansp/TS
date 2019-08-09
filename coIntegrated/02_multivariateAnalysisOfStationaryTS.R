@@ -122,3 +122,31 @@ fevd.var2 <- fevd(varsimest, n.ahead=10)
 args(vars:::plot.varfevd)
 plot(fevd.var2, addbars=2, col=c(1, 2))
 
+
+
+# 3. Structural VAR Models
+
+
+# 3.2 Estimation
+# Code 2.8: SVAR: A-Model
+Apoly <- array(c( 1  , -0.5,  0.3,
+                  0.8,  0.2,  0.1,
+                 -0.7, -0.2,  0.7,
+                  1  ,  0.5, -0.3),
+                c(3, 2, 2))
+B <- diag(2) # Cov matix for A-Model
+svarA <- ARMA(A=Apoly, B=B) # VAR(2) mod
+# Simulate 500 realizations
+svarsim <- simulate(svarA, sampleT=500) # can add rng=list(seed=c(123))
+svardat <- matrix(svarsim$output, nrow=500)
+colnames(svardat) <- c('y1', 'y2')
+varest <- VAR(svardat, p=2, type='none') # Estimate VAR mod
+# Set up matrices for A-mod
+Amat <- diag(2)
+Amat[1, 2] <- Amat[2, 1] <- NA
+# Est SVAR A-type mod via MLE
+args(SVAR)
+svar.A <- SVAR(varest, estmethod='direct', Amat=Amat, hessian=T)
+svar.A
+svar.A$Ase # SEs of A matrix
+svar.A$A / svar.A$Ase # t-stats for off-diaganols
