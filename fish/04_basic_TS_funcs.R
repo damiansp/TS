@@ -101,3 +101,28 @@ pacf(co2.D2D12)
 
 
 # 4. Correlation Within and Among Time Series
+par(mfrow=c(1, 1))
+acf(co2, lag.max=36)
+
+# "Better" ACF plot
+plot.acf <- function(ACF.obj) {
+  r <- ACF.obj$acf[-1]
+  k <- length(r)
+  n <- ACF.obj$n.used
+  plot(seq(k), 
+       r, 
+       type='h', 
+       lwd=2, 
+       yaxs='i', 
+       xaxs='i', 
+       ylim=c(floor(min(r)), 1), 
+       xlim=c(0, k + 1), 
+       xlab='Lag', 
+       ylab='Correlation', 
+       las=1)
+  abline(h=-1 / n + c(-1.96, 196) / sqrt(n), lty=2, col=4)
+  abline(h=0)
+}
+
+co2.acf <- acf(co2, lag.max=36)
+plot.acf(co2.acf) # looks worse to me
