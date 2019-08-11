@@ -10,7 +10,8 @@ setwd('~/Learning/TS/penn')
 library(astsa)
 
 
-erie <- scan('https://newonlinecourses.science.psu.edu/stat510/sites/stat510/files/data/eriedata.dat')
+erie <- scan(paste0('https://newonlinecourses.science.psu.edu/stat510/sites/',
+                    'stat510/files/data/eriedata.dat'))
 erie <- ts(erie)
 par(mfrow=c(3, 1))
 plot(erie, type='l')
@@ -24,3 +25,7 @@ sarima(erie, 1, 0, 1) # diagnosicts look good, bur more params, and AIC = 1.514
 # Forecast sneak peek
 par(mfrow=c(1, 1))
 sarima.for(erie, 4, 1, 0, 0) # e.g. 4 steps ahead for AR(1)
+
+erie.ar1 <- sarima(erie, 1, 0, 0)
+acf(erie.ar1$fit$residuals)
+pacf(erie.ar1$fit$residuals)
