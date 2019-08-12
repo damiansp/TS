@@ -150,3 +150,37 @@ svar.A <- SVAR(varest, estmethod='direct', Amat=Amat, hessian=T)
 svar.A
 svar.A$Ase # SEs of A matrix
 svar.A$A / svar.A$Ase # t-stats for off-diaganols
+
+
+# Code 2.9 SVAR: B-Model
+B[2, 1] <- -0.8
+svarB <- ARMA(A=Apoly, B=B)
+svarsim <- simulate(svarB, sampleT=500)
+svardat <- matrix(svarsim$output, nrow=500, ncol=2)
+colnames(svardat) <- c('y1', 'y2')
+varest <- VAR(svardat, p=2, type='none')
+Bmat <- diag(2)
+Bmat[2, 1] <- NA
+svar.B <- SVAR(varest, estmethod='scoring', Bmat=Bmat, max.iter=200)
+svar.B
+
+par(mfrow=c(2, 1))
+ts.plot(svardat[, 'y1'])
+ts.plot(svardat[, 'y2'])
+
+
+# 3.3 Impulse Response Function
+# Code 2.10: SVAR-IRF
+args(vars:::irf.svarest)
+irf.svarA <- irf(svar.A, impulse='y1', response='y2', boot=F)
+args(vars:::plot.varirf)
+plot(irf.svarA)
+irf.svarB <- irf(svar.A, impulse='y2', response='y1', boot=F)
+plot(irf.svarB)
+
+
+# 3.4 Forecast Error Variance Decomposition
+# Code 2.11 FEVD
+args(vars:::fevd.svarest)
+fevd.svarB <- fevd(svar.B, n.ahead=5)
+plot(fevd.svarB, col=c(2, 4))
