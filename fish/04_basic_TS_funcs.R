@@ -126,3 +126,15 @@ plot.acf <- function(ACF.obj) {
 
 co2.acf <- acf(co2, lag.max=36)
 plot.acf(co2.acf) # looks worse to me
+
+
+# 4.1 Partial Autocorrelation Function (PACF)
+pacf(co2, lag.max=36)
+
+
+# 4.3 Cross-Correlation Function
+suns <- ts.intersect(lynx, sunspot.year)[, 'sunspot.year']
+lynx <- ts.intersect(lynx, sunspot.year)[, 'lynx']
+plot(cbind(suns, lynx))
+
+ccf(suns, lynx)
