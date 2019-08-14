@@ -43,13 +43,16 @@ acf(wave$waveht, type='covariance')$acf
 
 
 
-# 2.3 The Correlogram
-	# 2.3.1 General discussion
-	acf(waveht)
-	acf(AirPassengers)
+# 3 The Correlogram
 
-	# 2.3.2 Example based on air passenger series
-	AP <- AirPassengers
+
+# 3.1 General discussion
+acf(wave$waveht)
+acf(AirPassengers)
+
+
+# 3.2 Example based on air passenger series
+AP <- AirPassengers
 	AP.decom <- decompose(AP, "multiplicative")
 	plot(ts(AP.decom$random))
 	abline(h=1, lty=2)
