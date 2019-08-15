@@ -53,10 +53,10 @@ acf(AirPassengers)
 
 # 3.2 Example based on air passenger series
 AP <- AirPassengers
-	AP.decom <- decompose(AP, "multiplicative")
-	plot(ts(AP.decom$random))
-	abline(h=1, lty=2)
-	acf(AP.decom$random[7:138])	#indexing to remove NAs
+AP.decom <- decompose(AP, "multiplicative")
+plot(ts(AP.decom$random))
+abline(h=1, lty=2)
+acf(AP.decom$random[7:138])	#indexing to remove NAs
 	#Check the effectiveness of removing trend and seasonal variation:
 	sd(AP[7:138])	#109 for all
 	sd(AP[7:138] - AP.decom$trend[7:138])	#41.1 after removing trend
