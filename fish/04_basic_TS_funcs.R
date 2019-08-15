@@ -138,3 +138,19 @@ lynx <- ts.intersect(lynx, sunspot.year)[, 'lynx']
 plot(cbind(suns, lynx))
 
 ccf(suns, lynx)
+
+
+
+# 5. White Noise
+
+
+# 5.1 Simulating White Noise
+GWN <- rnorm(100, 5, 0.2)
+PWN <- rpois(50, 20)
+par(mfrow=c(2, 2))
+plot.ts(GWN)
+abline(h=5, col=4)
+plot.ts(PWN)
+abline(h=20, col=4)
+acf(GWN, main='Normal', lag.max=20)
+acf(PWN, main='Poisson', lag.max=20)
