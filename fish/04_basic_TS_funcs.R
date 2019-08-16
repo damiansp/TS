@@ -154,3 +154,13 @@ plot.ts(PWN)
 abline(h=20, col=4)
 acf(GWN, main='Normal', lag.max=20)
 acf(PWN, main='Poisson', lag.max=20)
+
+
+
+# 6. Random Walks
+N <- 300
+x <- w <- rnorm(n=N)
+for (t in 2:N) { x[t] <- x[t - 1] + w[t] }
+par(mfrow=c(2, 1))
+plot.ts(x, ylab=expression(x[t]))
+acf(x)
