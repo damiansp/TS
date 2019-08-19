@@ -57,18 +57,15 @@ AP.decom <- decompose(AP, "multiplicative")
 plot(ts(AP.decom$random))
 abline(h=1, lty=2)
 acf(AP.decom$random[7:138])	#indexing to remove NAs
-	#Check the effectiveness of removing trend and seasonal variation:
-	sd(AP[7:138])	#109 for all
-	sd(AP[7:138] - AP.decom$trend[7:138])	#41.1 after removing trend
-	sd(AP.decom$random[7:138])	#and only 0.033 when trend & seasonal removed
+#Check the effectiveness of removing trend and seasonal variation:
+sd(AP[7:138])	#109 for all
+sd(AP[7:138] - AP.decom$trend[7:138])	#41.1 after removing trend
+sd(AP.decom$random[7:138])	#and only 0.033 when trend & seasonal removed
 
-	# 2.3.3 Example based on the Font Reservoir series
-	Fontdsdt.dat <- read.table( 
-			 "http://staff.elena.aut.ac.nz/Paul-Cowpertwait/ts/Fontdsdt.dat", 
-			 header=T )
-	attach(Fontdsdt.dat)
-	plot(ts(adflow))
-	acf(adflow, xlab='lag(months)', main='')
+# 2.3.3 Example based on the Font Reservoir series
+f.res <- read.table(paste0(DATA, 'Fontdsdt.dat'), header=T)
+plot(ts(f.res$adflow))
+acf(f.res$adflow, xlab='lag(months)', main='')
 	
 
 

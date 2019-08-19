@@ -1,30 +1,28 @@
-#===============================#
-#                               #
-#  Ch 3 Forecasting Strategies  #
-#                               #
-#===============================#
+#=========#=========#=========#=========#=========#=========#=========#=========
 rm(list=ls())
-load('~/Desktop/R/Time Series/TimeSeries.RData')
-source('~/Desktop/SM/get.hist.quote2.R', chdir = TRUE)
+lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
+       detach,
+       character.only=T,
+       unload=T)
+setwd('~/Learning/TS/basic')
+options(digits=5)
+library(MASS)
 
-sp <- get.hist.quote2( '^gspc', #start='2004-01-01', 
-					   quote='AdjClose' )
-sp <- ts(as.ts(sp), start=1991, frequency=365)
-sp2011 <- get.hist.quote2( '^gspc', start='2011-01-01', quote='AdjClose' )
-sp2011 <- ts(as.ts(sp2011), start=2011, frequency=365)
-lode <- get.hist.quote2('lode', start='2011-01-01', quote='AdjClose')
-lode <- ts(as.ts(lode), start=2011, frequency=365)
-
-web <- 'http://staff.elena.aut.ac.nz/Paul-Cowpertwait/ts/'
+DATA <- paste0("https://raw.githubusercontent.com/dallascard/",
+               "Introductory_Time_Series_with_R_datasets/master/")
 
 
-#3.2 Leading Variables and Associated Variables
-	#3.2.2 Building approvals publication
-Build.dat <- read.table(paste(web, 'ApprovActiv.dat', sep=''), header=T)
-attach(Build.dat)
-App.ts <- ts(Approvals, start=c(1996,1), freq=4)
-Act.ts <- ts(Activity, start=c(1996,1), freq=4)
+
+# 2 Leading Variables and Associated Variables
+
+
+# 2.2 Building approvals publication
+build <- read.table(paste(DATA, 'ApprovActiv.dat', sep=''), header=T)
+App.ts <- ts(build$Approvals, start=c(1996, 1), freq=4)
+Act.ts <- ts(build$Activity, start=c(1996, 1), freq=4)
 ts.plot(App.ts, Act.ts, col=1:2)
+
+# Cross-Correlation
 
 acf(ts.union(App.ts, Act.ts))
 
