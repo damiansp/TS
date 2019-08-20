@@ -30,6 +30,8 @@ app.ran <- decompose(App.ts)$random
 app.ran.ts <- window(app.ran, start=c(1996,3))
 act.ran <- decompose(Act.ts)$random
 act.ran.ts <- window(act.ran, start=c(1996,3))
+plot(app.ran.ts)
+lines(act.ran.ts, col=2)
 dim(ts.union(app.ran.ts, act.ran.ts))
 acf(ts.union(app.ran.ts, act.ran.ts)[-(40:41), ])
 ccf(app.ran.ts[-(40:41)], act.ran.ts[-(40:41)])
@@ -37,8 +39,10 @@ print(acf(ts.union(app.ran.ts, act.ran.ts)[-(40:41), ]))
 
 
 
-#3.3 Bass Model
-	# 3.3.2 Model Definition
+# 3 Bass Model
+
+
+# 3.2 Model Definition
 	# @param n0	number sold at time = 0
 	# @param m	total number ultimately sold
 	# @param p	coef. of innovation (how novel the item is)
