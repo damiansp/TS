@@ -60,3 +60,40 @@ t1 <- m1$Theta
 t2 <- m2$Theta
 eigen(t1)
 eigen(t2)
+
+
+
+# 5. Estimation
+
+
+# 5.3 Limiting Properties
+# Example 2.3
+# k = 3, p = 2, T = 125
+dat <- read.table('data/q-gdp-ukcaus.txt', header=T)
+head(dat)
+gdp <- log(dat[, 3:5])
+dim(gdp) # 126 x 3
+TT <- 125
+z <- gdp[2:(TT + 1), ] - gdp[1:TT, ] # growth rate
+z <- 100 * z                         # % growth rate
+dim(z) # 125 x 3
+Z <- z[3:125, ]
+X <- cbind(rep(1, TT - 2), z[2:(TT - 1), ], z[1:(TT - 2), ])
+X <- as.matrix(X)
+XPX <- t(X) %*% X
+XPX.inv <- solve(XPX)
+Z <- as.matrix(Z)
+XPZ <- t(X) %*% Z
+b.hat <- XPX.inv %*% XPZ
+b.hat
+
+A <- Z - X %*% b.hat
+Sig <- t(A) %*% A / (TT - (3 + 1) * 2 - 1)
+Sig
+COV <- kronecker(Sig, XPX.inv)
+se <- sqrt(diag(COV))
+length(b.hat)
+length(se)
+beta <- as.matrix(as.vector(b.hat), ncol=1)
+para <- cbind(b.hat, se)#, COV / se)
+para
