@@ -95,5 +95,8 @@ se <- sqrt(diag(COV))
 length(b.hat)
 length(se)
 beta <- as.matrix(as.vector(b.hat), ncol=1)
-para <- cbind(b.hat, se)#, COV / se)
+para <- cbind(beta, se, beta / se)
 para
+
+Sig1 <- t(A) %*% A / (TT - 2) # MLE of Sigma_a
+Sig1
