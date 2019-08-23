@@ -164,3 +164,55 @@ for (t in 2:N) { x[t] <- x[t - 1] + w[t] }
 par(mfrow=c(2, 1))
 plot.ts(x, ylab=expression(x[t]))
 acf(x)
+
+
+
+# 7. Autoregressive (AR) Models
+
+
+# 7.1 Simulating an AR(p) Process
+# AR(1); Note: |phi| < 1
+N <- 100
+AR.sm <- list(order=c(1, 0, 0), ar=0.1, sd=0.1)
+AR.lg <- list(order=c(1, 0, 0), ar=0.9, sd=0.1)
+AR1.sm <- arima.sim(n=N, model=AR.sm)
+AR1.lg <- arima.sim(n=N, model=AR.lg)
+par(mfrow=c(2, 1))
+ylm <- range(c(AR1.sm, AR1.lg))
+plot.ts(AR1.sm, 
+        ylim=ylm, 
+        ylab=expression(italic(x[t])), 
+        main=expression(paste(phi, ' = 0.1')))
+plot.ts(AR1.lg, 
+        ylim=ylm, 
+        ylab=expression(italic(x[t])), 
+        main=expression(paste(phi, ' = 0.9')))
+
+AR.pos <- list(order=c(1, 0, 0), ar=0.5, sd=0.1)
+AR.neg <- list(order=c(1, 0, 0), ar=-0.5, sd=0.1)
+AR1.pos <- arima.sim(n=N, model=AR.pos)
+AR1.neg <- arima.sim(n=N, model=AR.neg)
+ylm <- range(c(AR1.pos, AR1.neg))
+plot.ts(AR1.pos, 
+        ylim=ylm, 
+        ylab=expression(italic(x[t])), 
+        main=expression(paste(phi, ' = 0.5')))
+plot.ts(AR1.neg, 
+        ylim=ylm, 
+        ylab=expression(italic(x[t])), 
+        main=expression(paste(phi, ' = -0.5')))
+# Note: Use caution with arima sim, will complain if  non-stationary model 
+# specs.
+arima.sim(n=N, model=list(order=c(2, 0, 0), ar=c(0.5, 0.5)))
+
+
+# 7.2 Correlation Structure of AR(p) Process
+ARp <- c(0.7, 0.2, -0.1, -0.3) # AR coefs
+AR.mods <- list()
+for (p in 1:4) { AR.mods[[p]] <- arima.sim(n=10000, list(ar=ARp[1:p])) }
+par(mfrow=c(4, 3))
+for (p in 1:4) {
+  plot.ts(AR.mods[[p]][1:100], ylab=sprintf('AR(%d)', p))
+  acf(AR.mods[[p]], lag.max=12, main='')
+  pacf(AR.mods[[p]], lag.max=12, ylab='PACF', main='')
+}
