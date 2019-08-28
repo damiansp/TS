@@ -43,77 +43,80 @@ print(acf(ts.union(app.ran.ts, act.ran.ts)[-(40:41), ]))
 
 
 # 3.2 Model Definition
-	# @param n0	number sold at time = 0
-	# @param m	total number ultimately sold
-	# @param p	coef. of innovation (how novel the item is)
-	# @param q	coef. of imitation (how likely/quickly consumers are to mimic)
-	# @param periods no. of time steps to plot/calculate
-	bass <- function(n0, m, p, q, periods) {
-		n <- numeric(periods)
-		n[1] <- n0
-		
-		for (t in 2:periods) {
-			n[t] <- n[t - 1] + p*(m - n[t - 1]) + 
-					q*n[t - 1]*(m - n[t - 1]) / m
-		}
-		
-		return (n)
-	}
+# @param n0	number sold at time = 0
+# @param m	total number ultimately sold
+# @param p	coef. of innovation (how novel the item is)
+# @param q	coef. of imitation (how likely/quickly consumers are to mimic)
+# @param periods no. of time steps to plot/calculate
+bass <- function(n0, m, p, q, periods) {
+  n <- numeric(periods)
+  n[1] <- n0
+  for (t in 2:periods) {
+    n[t] <- n[t - 1] + p*(m - n[t - 1]) + q*n[t - 1]*(m - n[t - 1]) / m
+  }
+  n
+}
 	
-	n0 <- 10 	# no. users at time 0
-	m <- 1000	# total n who will ultimately buy
-	p <- 0.9		# coef. of innovation
-	q <- 0.5 	# coef. of imitiation
-	plot(bass(n0, m, p, q, 30), type='l')
-	p <- 0.2
-	lines(bass(n0, m, p, q, 30), type='l', col=2)
-	q <- 0.2
-	lines(bass(n0, m, p, q, 30), type='l', col=3)
-	p <- 0.001; q <- 0.7
-	lines(bass(n0, m, p, q, 30), type='l', col=4)
-	p <- 0.7; q <- 0.001
-	lines(bass(n0, m, p, q, 30), type='l', col=5)
-	p <- 0.01; q <- 0.01
-	lines(bass(n0, m, p, q, 30), type='l', col=6)
+n0 <- 10 	# no. users at time 0
+m <- 1000	# total n who will ultimately buy
+p <- 0.9	# coef. of innovation
+q <- 0.5 	# coef. of imitiation
+plot(bass(n0, m, p, q, 30), type='l')
+p <- 0.2
+lines(bass(n0, m, p, q, 30), type='l', col=2)
+q <- 0.2
+lines(bass(n0, m, p, q, 30), type='l', col=3)
+p <- 0.001
+q <- 0.7
+lines(bass(n0, m, p, q, 30), type='l', col=4)
+p <- 0.7
+q <- 0.001
+lines(bass(n0, m, p, q, 30), type='l', col=5)
+p <- 0.01
+q <- 0.01
+lines(bass(n0, m, p, q, 30), type='l', col=6)
+
+p <- 0
+q <- 0
+plot(bass(n0, m, p, q, 20), type='l', ylim=c(0, 1000))
+p <- 1	
+lines(bass(n0, m, p, q, 20), type='l', col=2)
+q <- 1
+lines(bass(n0, m, p, q, 20), type='l', col=3)
+p <- 0
+lines(bass(n0, m, p, q, 20), type='l', col=4)
 	
-	p <- 0; q <- 0
-	plot(bass(n0, m, p, q, 20), type='l', ylim=c(0, 1000))
-	p <- 1	
-	lines(bass(n0, m, p, q, 20), type='l', col=2)
-	q <- 1
-	lines(bass(n0, m, p, q, 20), type='l', col=3)
-	p <- 0
-	lines(bass(n0, m, p, q, 20), type='l', col=4)
 	
-	#3.3.4 Example	
-	T79 <- 1:10
-	Tdelt <- (1:100) / 10
-	Sales <- c(840, 1470, 2110, 4000, 7590, 10950, 10530, 9470, 7790, 5890)
-	Cusales <- cumsum(Sales)
-	Bass.nls <- nls( Sales ~ M * (((P + Q)^2 / P) * exp(-(P + Q) * T79)) / 
-							 (1 + (Q / P) * exp(-(P + Q) * T79))^2, 
-					 start=list(M=60630, P=0.03, Q=0.38) )
-	summary(Bass.nls)
+# 3.4 Example	
+T79 <- 1:10
+Tdelt <- (1:100) / 10
+Sales <- c(840, 1470, 2110, 4000, 7590, 10950, 10530, 9470, 7790, 5890)
+Cusales <- cumsum(Sales)
+Bass.nls <- nls(
+  Sales ~ M 
+    * (((P + Q)^2 / P) * exp(-(P + Q) * T79)) 
+    / (1 + (Q / P) * exp(-(P + Q) * T79))^2, 
+  start=list(M=60630, P=0.03, Q=0.38))
+summary(Bass.nls)
 
-	Bcoef <- coef(Bass.nls)
-	m <- Bcoef[1]
-	p <- Bcoef[2]
-	q <- Bcoef[3]
-	ngete <- exp(-(p + q) * Tdelt)
-	Bpdf <- m * (( p + q)^2 / p) * ngete / (1 + (q / p) * ngete)^2
-	plot( Tdelt, Bpdf, xlab="Years (since 1979)", ylab='Sales per year', 
-		  type='l' )
-	points(T79, Sales)
-	Bcdf <- m* (1 - ngete) / (1 + (q / p)*ngete)
-	plot(Tdelt, Bcdf, col=2, type='l')
-	lines(Tdelt, Bpdf, xlab="Years (since 1979)", ylab='Cumulative sales')
-	points(T79, Sales)
-	points(T79, Cusales, col=2)
+Bcoef <- coef(Bass.nls)
+m <- Bcoef[1]
+p <- Bcoef[2]
+q <- Bcoef[3]
+ngete <- exp(-(p + q) * Tdelt)
+Bpdf <- m * (( p + q)^2 / p) * ngete / (1 + (q / p) * ngete)^2
+plot(Tdelt, Bpdf, xlab='Years (since 1979)', ylab='Sales per year', type='l')
+points(T79, Sales)
+Bcdf <- m* (1 - ngete) / (1 + (q / p)*ngete)
+plot(Tdelt, Bcdf, col=2, type='l')
+lines(Tdelt, Bpdf, xlab='Years (since 1979)', ylab='Cumulative sales')
+points(T79, Sales)
+points(T79, Cusales, col=2)
 
 
 
-#3.4 Exponential Smoothing & the Holt-Winters Method
-	#3.4.1 Exponential smoothing
+# 4 Exponential Smoothing & the Holt-Winters Method
+# 4.1 Exponential smoothing
 	Motor.dat <- read.table(paste(web, 'motororg.dat', sep=''), header=T)
 	attach(Motor.dat)
 	mean(complaints) #19.4
