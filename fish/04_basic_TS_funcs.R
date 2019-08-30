@@ -216,3 +216,43 @@ for (p in 1:4) {
   acf(AR.mods[[p]], lag.max=12, main='')
   pacf(AR.mods[[p]], lag.max=12, ylab='PACF', main='')
 }
+
+
+
+# 8. Moving-Average (MA) Models
+
+
+# 8.1 Simulating an MA(q) Process
+MA.sm <- list(order(0, 0, 1), ma=0.2, sd=0.1)
+MA.lg <- list(order(0, 0, 1), ma=0.8, sd=0.1)
+MA.neg <- list(order(0, 0, 1), ma=-0.5, sd=0.1)
+N <- 200
+MA1.sm <- arima.sim(n=N, model=MA.sm)
+MA1.lg <- arima.sim(n=N, model=MA.lg)
+MA1.neg <- arima.sim(n=N, model=MA.neg)
+par(mfrow=c(3, 1))
+plot.ts(MA1.sm, 
+        ylab=expression(itatlic(x[t])), 
+        main=expression(paste(theta, ' = 0.2')))
+plot.ts(MA1.lg, 
+        ylab=expression(itatlic(x[t])), 
+        main=expression(paste(theta, ' = 0.8')))
+plot.ts(MA1.neg, 
+        ylab=expression(itatlic(x[t])), 
+        main=expression(paste(theta, ' = -0.5')))        
+        
+        
+# 8.2 Correlation Structure of MA(q) Process
+MAq <- c(0.7, 0.2, -0.1, -0.3) # coefs
+MA.mods <- list()
+for (q in 1:4) {
+  # SD assumed to be 1, so not specified (default)
+  MA.mods[[q]] <- arima.sim(n=1000, list(ma=MAq[1:q]))
+}
+
+par(mfrow=c(4, 3))
+for (q in 1:4) {
+  plot.ts(MA.mods[[q]][1:100], ylab=paste('MA(', q, ')', sep=''))
+  acf(MA.mods[[q]], lag.max=12)
+  pacf(MA.mods[[q]], lag.max=12, ylab='PACF')
+}
