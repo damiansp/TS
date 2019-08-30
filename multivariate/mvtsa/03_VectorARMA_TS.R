@@ -100,3 +100,24 @@ para
 
 Sig1 <- t(A) %*% A / (TT - 2) # MLE of Sigma_a
 Sig1
+
+# Estimation of VAR Models
+dat <- read.table('data/q-gdp-ukcaus.txt', header=T)
+gdp <- log(dat[, 3: 5])
+head(gdp)
+TT <- 126
+z <- gdp[2:TT, ] - gdp[1:(TT - 1), ] # differenced
+z <- 100 * z
+head(z)
+m1 <- VAR(z, 2) # VAR(2) # i.e., model is:
+
+#        / 0.13 \   / 0.38 0.10 0.05 \            / 0.05  0.11  0.02 \
+# z[t] = | 0.13 | + | 0.36 0.35 0.46 | z[t - 1] + |-0.21 -0.17 -0.01 | z[t - 2]
+#        \ 0.29 /   \ 0.50 0.25 0.23 /            \-0.33 -0.13  0.10 /
+#
+# + a[t] 
+#                            / 0.28 0.02 0.07 \
+# with resid. cov ∑.hat[a] = | 0.02 0.29 0.14 |
+#                            \ 0.07 0.14 0.34 /
+
+
