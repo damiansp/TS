@@ -256,3 +256,33 @@ for (q in 1:4) {
   acf(MA.mods[[q]], lag.max=12)
   pacf(MA.mods[[q]], lag.max=12, ylab='PACF')
 }
+
+
+
+# 9. Autoregressive Moving Average (ARMA) Models
+
+
+# 9.1 Fitting ARMA(p, q) Models with arima()
+# ARMA(2, 2)
+arma2.2 <- list(order=c(2, 0, 2), ar=c(-0.7, 0.2), ma=c(0.7, 0.2))
+mu <- 5
+# sim process (+ mean)
+arma.sim <- arima.sim(n=10000, model=arma2.2) + mu
+# Est params
+arima(x=arma.sim, order=c(2, 0, 2))
+
+
+# 9.2 Searching Over Model Orders
+arma.res <- list()
+i <- 1
+for (p in 0:3) {
+  for (q in 0:3) {
+  	arma.res[[i]] <- arima(x=arma.sim, order=c(p, 0, q))
+  	i <- i + 1  	
+  }
+}
+
+arma.aic <- sapply(arma.res, function(x) { x$aic })
+arma.res[[which(arma.aic == min(arma.aic))]]
+
+auto.arima(arma.sim, start.p=0, max.p=3, start.q=0, max.q=3)
