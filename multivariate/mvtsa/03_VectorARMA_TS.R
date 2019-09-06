@@ -120,4 +120,14 @@ m1 <- VAR(z, 2) # VAR(2) # i.e., model is:
 # with resid. cov ∑.hat[a] = | 0.02 0.29 0.14 |
 #                            \ 0.07 0.14 0.34 /
 
+# Bayesian Estimation
+dat <- read.table('data/q-gdp-ukcaus.txt', header=T)
+x <- log(dat[, 3:5])
+dim(x) # 126, 3
+TT <- dim(x)[1]
+dx <- x[2:TT, ] - x[1:(TT - 1), ]
+dx <- dx * 100
+C = 0.1 * diag(7) # lambda = 0.01
+V0 = diag(3)      # V[0] = I[3]
+mm <- BVAR(dx, p=2, C, V0)  # c.f. prev output... very close
 
