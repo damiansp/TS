@@ -116,6 +116,8 @@ points(T79, Cusales, col=2)
 
 
 # 4 Exponential Smoothing & the Holt-Winters Method
+
+
 # 4.1 Exponential smoothing
 	Motor.dat <- read.table(paste(web, 'motororg.dat', sep=''), header=T)
 	attach(Motor.dat)
