@@ -111,14 +111,16 @@ z <- 100 * z
 head(z)
 m1 <- VAR(z, 2) # VAR(2) # i.e., model is:
 
-#        / 0.13 \   / 0.38 0.10 0.05 \            / 0.05  0.11  0.02 \
+#        _      _   _                _            _                  _
+#        | 0.13 |   | 0.38 0.10 0.05 |            | 0.05  0.11  0.02 |
 # z[t] = | 0.13 | + | 0.36 0.35 0.46 | z[t - 1] + |-0.21 -0.17 -0.01 | z[t - 2]
-#        \ 0.29 /   \ 0.50 0.25 0.23 /            \-0.33 -0.13  0.10 /
-#
-# + a[t] 
-#                            / 0.28 0.02 0.07 \
+#        | 0.29 |   | 0.50 0.25 0.23 |            |-0.33 -0.13  0.10 |
+#        -      -   -                -            -                  -
+# + a[t]                     _                _
+#                            | 0.28 0.02 0.07 |
 # with resid. cov ∑.hat[a] = | 0.02 0.29 0.14 |
-#                            \ 0.07 0.14 0.34 /
+#                            | 0.07 0.14 0.34 |
+#                            -                -
 
 # Bayesian Estimation
 dat <- read.table('data/q-gdp-ukcaus.txt', header=T)
@@ -127,7 +129,20 @@ dim(x) # 126, 3
 TT <- dim(x)[1]
 dx <- x[2:TT, ] - x[1:(TT - 1), ]
 dx <- dx * 100
-C = 0.1 * diag(7) # lambda = 0.01
-V0 = diag(3)      # V[0] = I[3]
+C M <- 0.1 * diag(7) # lambda = 0.01
+V0 <- diag(3)      # V[0] = I[3]
 mm <- BVAR(dx, p=2, C, V0)  # c.f. prev output... very close
 
+
+# Ex. 2.5 Comparing Infromation Criteria
+dat <- read.table('data/q-gdp-ukcaus.txt', header=T)
+gdp <- log(dat[, 3: 5])
+head(gdp)
+TT <- 126
+z <- gdp[2:TT, ] - gdp[1:(TT - 1), ] # differenced
+m2 <- VARorder(z)
+names(m2)
+plot(m2$aic, type='l', ylim=c(-32, -29))
+lines(m2$bic, col=2)
+lines(m2$hq, col=4)
+legend('topleft', lty=1, col=c(1, 2, 4), legend=c('AIC', 'BIC', 'HQ'))
