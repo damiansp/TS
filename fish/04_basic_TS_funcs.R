@@ -286,3 +286,25 @@ arma.aic <- sapply(arma.res, function(x) { x$aic })
 arma.res[[which(arma.aic == min(arma.aic))]]
 
 auto.arima(arma.sim, start.p=0, max.p=3, start.q=0, max.q=3)
+
+
+
+# 10. Problems
+par(mfrow=c(1, 1))
+data(hourlyphyto)
+dat <- hourlyphyto
+head(dat)
+start <- as.Date('2014-12-01')
+day.of.year <- (start - as.Date('2014-01-01') + 1)
+day.of.year
+dim(dat)
+dat.ts <- ts(dat, start=c(1), freq=24)
+ts.plot(dat.ts)
+ts.plot(log(dat.ts))
+
+decomp <- decompose(log(dat.ts))
+plot(decomp)
+
+par(mfrow=c(2, 1))
+acf(log(dat.ts))
+pacf(log(dat.ts))
