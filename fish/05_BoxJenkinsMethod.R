@@ -24,3 +24,10 @@ chinook <- chinook.month
 
 
 # 1. Box-Jenkins Method
+#    A) Model Form Selection
+#       1) Evaluate Stationarity
+#       2) Selection of Differencing Level (d) to Fix Stationarity
+#       3) Selection of AR level (p)
+#       4) Selection of MA level (q)
+#    B) Param Estimation
+#    C) Model Checking
