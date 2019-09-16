@@ -55,3 +55,25 @@ acf(y2, lag.max=100, main='Short Memory ACF')
 spectrum(y2, main='Short Memory Spectral Density')
 par(op)
 
+
+# Code 3.3 R/S Statistic
+# ARFIMA(0., 0.3, 0.)
+y <- fracdiff.sim(n=1000, ar=0, ma=0, d=0.3)
+# Get series, demean if necessary
+y.dm <- y$series
+max.y <- max(cumsum(y.dm))
+min.y <- min(cumsum(y.dm))
+sd.y <- sd(y$series)
+RS <- (max.y - min.y) / sd.y
+H <- log(RS) / log(1000)
+d <- H - 0.5 # cf. set value is 0.3
+
+# Code 3.4 Geweke and Porter-Hudak Method
+y <- fracdiff.sim(n=1000, ar=0, ma=0, d=0.3)
+y.spec <- spectrum(y$series, plot=F)
+lhs <- log(y.spec$spec)
+rhs <- log(4 * (sin(y.spec$freq / 2))^2)
+gph.reg <- lm(lhs ~ rhs)
+gph.sum <- summary(gph.reg)
+gph.sum
+sqrt(gph.sum$cov.unscaled * pi/6)[2, 2]
