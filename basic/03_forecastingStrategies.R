@@ -119,24 +119,25 @@ points(T79, Cusales, col=2)
 
 
 # 4.1 Exponential smoothing
-	Motor.dat <- read.table(paste(web, 'motororg.dat', sep=''), header=T)
-	attach(Motor.dat)
-	mean(complaints) #19.4
-	Comp.ts <- ts(complaints, start=c(1996, 1), freq=12)
-	plot(Comp.ts, xlab='Time (months)', ylab='Complaints')
+Motor.dat <- read.table(paste(DATA, 'motororg.dat', sep=''), header=T)
+head(Motor.dat)
+mean(Motor.dat$complaints) #19.4
+Comp.ts <- ts(Motor.dat$complaints, start=c(1996, 1), freq=12)
+plot.ts(Comp.ts, xlab='Time (months)', ylab='Complaints')
 
-	Comp.hw1 <- HoltWinters(complaints, beta=F, gamma=F)
-	plot(Comp.hw1)
-	Comp.hw1		#a = smoothed mean = 17.7
-	Comp.hw1$SSE		#2502
+Comp.hw1 <- HoltWinters(Motor.dat$complaints, beta=F, gamma=F)
+plot(Comp.hw1)
+Comp.hw1		 # a = smoothed mean = 17.7
+Comp.hw1$SSE # 2502
 
-	#force alpha val
-	Comp.hw2 <- HoltWinters(complaints, alpha=0.2, beta=F, gamma=F) 
-	Comp.hw2		#a = 18.0
-	Comp.hw2$SSE		#2526--a substantial increase in error
-	lines(Comp.hw2$fitted[,'xhat'], col=4)
+# force alpha val
+Comp.hw2 <- HoltWinters(Motor.dat$complaints, alpha=0.2, beta=F, gamma=F) 
+Comp.hw2		 # a = 18.0
+Comp.hw2$SSE # 2526--a substantial increase in error
+lines(Comp.hw2$fitted[,'xhat'], col=4)
 
-	#3.4.2 Holt-Winters Method
+
+# 4.2 Holt-Winters Method
 	wine.dat <- read.table(paste(web, 'wine.dat', sep=''), header=T)
 	attach(wine.dat)
 	sweetw.ts <- ts(sweetw, start=c(1980,1), freq=12)
