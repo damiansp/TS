@@ -138,22 +138,21 @@ lines(Comp.hw2$fitted[,'xhat'], col=4)
 
 
 # 4.2 Holt-Winters Method
-	wine.dat <- read.table(paste(web, 'wine.dat', sep=''), header=T)
-	attach(wine.dat)
-	sweetw.ts <- ts(sweetw, start=c(1980,1), freq=12)
-	plot(sweetw.ts, xlab='Time (months)', ylab='Sales (kL)')
-	plot(decompose(sweetw.ts))
-	sweetw.hw <- HoltWinters(sweetw.ts, seasonal='mult')
-	sweetw.hw
-	sweetw.hw$coef
-	sweetw.hw$SSE	# 477,693.9
+wine.dat <- read.table(paste(DATA, 'wine.dat', sep=''), header=T)
+sweetw.ts <- ts(wine.dat$sweetw, start=c(1980,1), freq=12)
+plot(sweetw.ts, xlab='Time (months)', ylab='Sales (kL)')
+plot(decompose(sweetw.ts))
+sweetw.hw <- HoltWinters(sweetw.ts, seasonal='mult')
+sweetw.hw
+sweetw.hw$coef
+sweetw.hw$SSE	# 477,693.9
+sqrt(sweetw.hw$SSE / length(wine.dat$sweetw))	# 50.542
+sd(wine.dat$sweetw)	# 121
+plot(sweetw.hw$fitted)
+plot(sweetw.hw)
 
-	sqrt(sweetw.hw$SSE / length(sweetw))		# 50.5
-	sd(sweetw)	#121
-	plot(sweetw.hw$fitted)
-	plot(sweetw.hw)
 
-	#3.4.3 Four-Year Ahead Forecasts for the Air Passenger Data
+#4.3 Four-Year Ahead Forecasts for the Air Passenger Data
 	AP.hw <- HoltWinters(AP, seasonal="mult")
 	plot(AP.hw)
 	AP.predict <- predict(AP.hw, n.ahead = 4*12)
