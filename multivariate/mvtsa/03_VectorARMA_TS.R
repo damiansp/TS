@@ -146,3 +146,11 @@ plot(m2$aic, type='l', ylim=c(-32, -29))
 lines(m2$bic, col=2)
 lines(m2$hq, col=4)
 legend('topleft', lty=1, col=c(1, 2, 4), legend=c('AIC', 'BIC', 'HQ'))
+
+
+# Ex. 2.6: Checking Multivariate Portmanteau Stats (resid cross corr) on a 
+# VAR(2) Model
+names(m1)
+resi <- m1$residuals # resids of VAR(2)
+mq(resi, adj=18) # adj used to adjust degrees of freedom (presumably forcing
+                 # 0s at higher lags..?)
