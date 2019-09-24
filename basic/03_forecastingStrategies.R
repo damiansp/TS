@@ -152,11 +152,12 @@ plot(sweetw.hw$fitted)
 plot(sweetw.hw)
 
 
-#4.3 Four-Year Ahead Forecasts for the Air Passenger Data
-	AP.hw <- HoltWinters(AP, seasonal="mult")
-	plot(AP.hw)
-	AP.predict <- predict(AP.hw, n.ahead = 4*12)
-	ts.plot(AP, AP.predict, col=1:2)
+# 4.3 Four-Year Ahead Forecasts for the Air Passenger Data
+AP <- AirPassengers
+AP.hw <- HoltWinters(AP, seasonal="mult")
+plot(AP.hw)
+AP.predict <- predict(AP.hw, n.ahead=4*12)
+ts.plot(AP, AP.predict, col=1:2)
 
 
 
@@ -168,118 +169,3 @@ plot(sweetw.hw)
 
 
 
-
-# Playing with S&P data
-plot(sp)
-sp.daily.vals <- (as.vector(sp[!is.na(sp)]))
-n <- length(sp.daily.vals)
-sp.daily.change <- sp.daily.vals[2:n] / sp.daily.vals[1:(n - 1)]
-plot(sp, xlim=c(1991, 2019), ylim=c(0, 5000))
-iters <- 1000
-n.forecast <- 1000
-lastDate <- attr(sp, 'tsp')[2]
-dates <- seq(lastDate, lastDate + 4, length=n.forecast)
-
-fillNA <- function(x) {
-	nas <- which(is.na(x))
-	while(length(nas) > 0) {
-		x[nas] <- x[nas - 1]
-		nas <- which(is.na(x))
-	}
-	
-	return(x)
-}
-
-spFill <- fillNA(sp)
-
-M <- matrix(NA, nrow=n.forecast, ncol=iters)
-for (i in 1:iters) {
-	sp.forecast <- numeric(n.forecast)
-	daily.changes <- sample(sp.daily.change, n.forecast, T)
-	sp.forecast[1] <- sp.daily.vals[n] * daily.changes[1]
-	for (p in 2:n.forecast) {
-		sp.forecast[p] <- sp.forecast[p - 1] * daily.changes[p]
-	}
-	lines(sp.forecast ~ dates, col=rgb(0,0,1,0.02))
-	M[, i] <- sp.forecast
-}
-qs <- apply(M, 1, quantile, probs=c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
-lines(qs[1,] ~ dates, col=1, lty=1)
-lines(qs[4,] ~ dates, col=1, lty=1)
-lines(qs[7,] ~ dates, col=1, lty=1)
-
-lines(qs[2,] ~ dates, col=2, lty=3)
-lines(qs[6,] ~ dates, col=2, lty=3)
-
-lines(qs[3,] ~ dates, col=2, lty=2)
-lines(qs[5,] ~ dates, col=2, lty=2)
-
-
-par(mfrow=c(1,1))
-
-decAdd <- decompose(spFill)
-trendAdd <- decAdd$trend
-seasAdd <- decAdd$seasonal
-eAdd <- decAdd$random
-
-decMult <- decompose(spFill, type='mult')
-trendMult <- decMult$trend
-seasMult <- decMult$seasonal
-eMult <- decMult$random
-
-sd(eAdd, na.rm=T)	# 45.20
-sd(eMult, na.rm=T)	# 0.041
-
-plot(decompose(spFill))
-plot(decompose(spFill, type='multiplicative'))
-
-par(mfrow=c(2, 1))
-plot(sp)
-lines(trendAdd + seasAdd, col=2)
-plot(sp)
-lines(trendMult + seasMult, col=2)
-
-plot(sp, xlim=c(2010, 2016))
-lines(trendAdd + seasAdd, col=2)
-plot(sp, xlim=c(2010, 2016))
-lines(trendMult + seasMult, col=2)
-
-sp.hw <- HoltWinters(sp.daily.vals, beta=F, gamma=F) 
-plot(sp.hw)
-plot(sp.hw, xlim=c(6100, 6160), ylim=c(2050, 2150))
-sp.hw	# smoothing param = 0.93 or almost 1, meaning  it basically just 	
-		# predicts that tomorrows val = today's value... of no use
-		
-SP.hw <- HoltWinters(ts(sp.daily.vals, frequency=250), seasonal="mult")
-plot(SP.hw)
-plot(SP.hw, xlim=c(25, 27))
-SP.predict <- predict(SP.hw, n.ahead = 1*250)
-ts.plot(ts(sp.daily.vals, frequency=250), SP.predict, col=1:2)
-ts.plot( ts(sp.daily.vals, frequency=250), SP.predict, col=1:2, 
-		 xlim=c(25.5, 26.75), ylim=c(1500, 2500) )
-
-
-
-spNoNA <- ts(sp[!is.na(sp)])
-sp2011NoNA <- ts(sp2011[!is.na(sp2011)])
-lodeNoNA <- ts(lode[!is.na(lode)])
-acf(spNoNA)
-acf(diff(spNoNA))
-acf(decompose(spFill)$random[183:8731])
-acf(diff(decompose(spFill)$random[183:8731]))
-
-ts.plot(sp2011, lode*350, col=1:2)
-
-acf(cbind(diff(sp2011NoNA), diff(lodeNoNA)))
-
-
-
-
-
-
-
-
-
-save.image(file="~/Desktop/R/Time Series/TimeSeries.RData")
-detach(Motor.dat)
-detach(wine.dat)
