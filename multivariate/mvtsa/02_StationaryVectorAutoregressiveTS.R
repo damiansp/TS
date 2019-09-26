@@ -10,7 +10,7 @@ library(MTS)
 
 
 
-# 2. VAR(1) Models
+# 2. VAR(1) Models--------------------------------------------------------------
 
 
 # 2.5 Moment Equations
@@ -38,13 +38,14 @@ Di <- solve(D)
 
 
 
-# 5 Estimation
+# 5 Estimation------------------------------------------------------------------
 dat <- read.table('data/q-gdp-ukcaus.txt', header=T)
 head(dat)
 gdp <- log(dat[, 3:5])
 dim(gdp)
 z <- gdp[2:126, ] - gdp[1:125, ]
 head(z)
+class(z)
 z <- z*100
 dim(z)
 Z <- z[3:125, ]
@@ -90,7 +91,7 @@ mm <- BVAR(dx, p=2, C, V0)
 
 
 
-# 6 Order Selection
+# 6 Order Selection-------------------------------------------------------------
 z1 <- z / 100 # back to original values
 m2 <- VARorder(z1)
 order <- 0:13
@@ -101,7 +102,7 @@ legend('topleft', lty=1, col=c(1, 2, 4), legend=c('AIC', 'BIC', 'HQ'), bty='n')
 
 
 
-# 7 Model Checking
+# 7 Model Checking--------------------------------------------------------------
 
 
 # 7.2 Multivariate Portmanteau Statistics
@@ -151,17 +152,18 @@ MTSdiag(m2, adj=12)
 
 
 
-
-################################################################################
-
-# 9 Forecasting
-VARpred(m1, 8) # 8 steps ahead
-colMeans(z)
+# 9 Forecasting-----------------------------------------------------------------
+matplot(m1$data, type='l', col=c(1, 2, 4), lty=1, xlim=c(0, 140))
+m1.preds <- VARpred(m1, 8) # 8 steps ahead
+lines(126:133, m1.preds$pred[, 1])
+lines(126:133, m1.preds$pred[, 2], col=2)
+lines(126:133, m1.preds$pred[, 3], col=4)
+colMeans(z) # mean-reverting process
 sqrt(apply(z, 2, var)) # sample ses
 
 
-
-# 10 Impulse Response Functions
+## ************************************************************************** ##
+# 10 Impulse Response Functions-------------------------------------------------
 Phi <- m2$Phi # simplified VAR(2) mod
 Sig <- m2$Sigma
 VARirf(Phi, Sig) # orthog innovations
