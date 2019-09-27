@@ -162,10 +162,9 @@ colMeans(z) # mean-reverting process
 sqrt(apply(z, 2, var)) # sample ses
 
 
-## ************************************************************************** ##
 # 10 Impulse Response Functions-------------------------------------------------
-Phi <- m2$Phi # simplified VAR(2) mod
-Sig <- m2$Sigma
+Phi <- m2$Phi    # simplified VAR(2) mod AR coefs
+Sig <- m2$Sigma  # ...and cross cor matrix
 VARirf(Phi, Sig) # orthog innovations
 VARirf(Phi, Sig, orth=F) # orig innovations
 
