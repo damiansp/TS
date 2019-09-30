@@ -88,3 +88,39 @@ grid.arrange(p1, p2, ncol=1)
 
 
 # 2.2 Stationary Around a Linear Trend
+intercept <- 0.5
+trend <- 0.1
+sd <- 0.5
+TT <- 20
+white.noise <- rnorm(TT, sd=sd)
+wn.i <- white.noise + intercept
+wn.ti <- white.noise + trend*(1:TT) + intercept
+
+op <- par(mfrow=c(1, 3))
+plot(white.noise, type='l')
+plot(trend * (1:TT), type='b')
+plot(wn.ti, type='l')
+par(op)
+
+# As AR(1)
+beta1 <- 0.8
+ar1 <- arima.sim(TT, model=list(ar=beta1), sd=sd)
+ar1i <- ar1 + intercept
+ar1ti <- ar1 + trend * (1:TT) + intercept
+dat <- data.frame(t=1:TT, ar1=ar1, ar1i=ar1i, ar1ti=ar1ti)
+p <- ggplot(dat, aes(x=t, y=ar1)) + geom_line() + ggtitle('AR1')
+p2 <- (ggplot(dat, aes(x=t, y=ar1i)) 
+       + geom_line() + ggtitle('AR1 (non-zero mean)'))
+p3 <- (ggplot(dat, aes(x=t, y=ar1ti)) 
+       + geom_line() + ggtitle('AR1 (with linear trend)'))
+grid.arrange(p, p2, p3, ncol=3)
+
+
+# 2.3 Greek Landing Data
+anchovy <- subset(landings, Species=='Anchovy')$log.metric.tons
+anchovy.ts <- ts(anchovy, start=1964)
+plot(anchovy.ts, ylab='log(catch)')
+
+
+
+# 3. Dickey-Fuller and Augmented Dickey-Fuller Tests
