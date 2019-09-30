@@ -170,7 +170,7 @@ VARirf(Phi, Sig, orth=F) # orig innovations
 
 
 
-# 11 Forecast Error Variance Decompostion
+# 11 Forecast Error Variance Decompostion---------------------------------------
 m1 <- VAR(z, 2)
 m2 <- refVAR(m1)
 names(m2)
