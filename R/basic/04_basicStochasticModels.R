@@ -13,7 +13,7 @@ DATA <- paste0("https://raw.githubusercontent.com/dallascard/",
 
 
 
-# 2 White Noise
+# 2 White Noise-----------------------------------------------------------------
 
 
 # 2.3 Simulation in R
@@ -31,8 +31,8 @@ lines(x, dnorm(x), col=5, lw=2)
 acf(rnorm(N))
 
 
----------------------------------------------------
-# 4.3 Random Walks
+
+# 3 Random Walks----------------------------------------------------------------
 	# 4.3.7 Simulation
 	x = w = rnorm(1000)
 	for(t in 2:1000) { x[t] = x[t-1] + w[t] }
