@@ -1,40 +1,37 @@
-#===============================#
-#                				#
-# Ch 4 Basic Stochastic Models	#
-#                				#
-#===============================#
+#=========#=========#=========#=========#=========#=========#=========#=========
+rm(list=ls())
+lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
+       detach,
+       character.only=T,
+       unload=T)
+setwd('~/Learning/TS/basic')
+options(digits=5)
+library(MASS)
 
-rm(list = ls())
-load('~/Desktop/R/Time Series/TimeSeries.RData')
-source('~/Desktop/SM/get.hist.quote2.R', chdir = TRUE)
-
-sp = get.hist.quote2( '^gspc', #start = '2004-01-01', 
-					  quote = 'AdjClose' )
-sp = ts(as.ts(sp), start = 1991, frequency = 365)
-sp2011 = get.hist.quote2( '^gspc', start = '2011-01-01', quote = 'AdjClose' )
-sp2011 = ts(as.ts(sp2011), start = 2011, frequency = 365)
-lode = get.hist.quote2('lode', start = '2011-01-01', quote = 'AdjClose')
-lode = ts(as.ts(lode), start = 2011, frequency = 365)
-
-
-# 4.1 Purpose
+DATA <- paste0("https://raw.githubusercontent.com/dallascard/",
+               "Introductory_Time_Series_with_R_datasets/master/")
 
 
 
-# 4.2 White Noise
-	# 4.2.3 Simulation in R
-	w = rnorm(100)
-	plot(w, type = 'l')
-
-	x = seq(-3, 3, length = 1000)
-	hist(rnorm(1000), prob = T)
-	lines(x, dnorm(x))
-
-	# 4.2.4 Second-Order Properties and the Correlogram
-	acf(rnorm(1000))
+# 2 White Noise
 
 
+# 2.3 Simulation in R
+N <- 100
+w <- rnorm(N)
+plot(w, type='l')
 
+N <- 1000
+x <- seq(-4, 4, length=N)
+hist(rnorm(N), prob=T, col=4)
+lines(x, dnorm(x), col=5, lw=2)
+
+
+# 2.4 Second-Order Properties and the Correlogram
+acf(rnorm(N))
+
+
+---------------------------------------------------
 # 4.3 Random Walks
 	# 4.3.7 Simulation
 	x = w = rnorm(1000)
