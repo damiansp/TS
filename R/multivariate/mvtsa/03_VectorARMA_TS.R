@@ -4,7 +4,7 @@ lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
        detach,
        character.only=T,
        unload=T)
-setwd('~/Learning/TS/multivariate')
+setwd('~/Learning/TS/R/multivariate')
 
 library(MTS)
 
