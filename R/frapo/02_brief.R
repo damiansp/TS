@@ -6,7 +6,8 @@ lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
        unload=T)
 setwd('~/Learning/TS/R/frapo')
 
-
+library(FRAPO)
+data(StockIndexAdj)
 
 # 4. Classes, Methods, and Functions
 # Create a class
@@ -167,3 +168,19 @@ P4 <- PortWgtRC$new(Weights=rep(0.2, 5),
                     Leveraged=F)
 P4
 
+
+
+# 5. The Accompanying Package FRAPO
+R <- returnseries(StockIndexAdj, method='discrete', trim=T)
+head(R) # returns
+P <- PGMV(R, optctrl=ctrl(trace=F))
+str(P)
+showClass('PortSol')
+showMethods(classes='PortSol', inherited=F)
+P
+
+showMethods('Weights', inherited=F)
+selectMethod(f='Weights', signature='PortSol')
+Weights(P)
+slot(P, 'weights')
+P@weights
