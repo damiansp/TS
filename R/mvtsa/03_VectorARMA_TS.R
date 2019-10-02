@@ -4,7 +4,7 @@ lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
        detach,
        character.only=T,
        unload=T)
-setwd('~/Learning/TS/R/multivariate')
+setwd('~/Learning/TS/R')
 
 library(MTS)
 
@@ -30,7 +30,7 @@ ccm(rtn)
 
 # 2 Specifying VMA Order
 # VMA order specification
-VMAOrder(data$dec1, lag=20)
+VMAorder(rtn[, 1:2], lag=20)
 
 
 
