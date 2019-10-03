@@ -4,7 +4,7 @@ lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
        detach,
        character.only=T,
        unload=T)
-setwd('~/Learning/TS/fish')
+setwd('~/Learning/TS/Rfish')
 
 library(atsalibrary)
 library(forecast)
@@ -124,3 +124,33 @@ plot(anchovy.ts, ylab='log(catch)')
 
 
 # 3. Dickey-Fuller and Augmented Dickey-Fuller Tests
+
+
+# 3.3 ADF Test Using adf.test()
+# Null hypothesis is: series is not stationary
+
+# 3.3.1 Test on White Noise
+TT <- 100
+wn <- rnorm(TT)
+adf.test(wn) # p <= 0.01; cannot reject stationarity (e.g., reject null hyp.)
+adf.test(wn, k=0) # note smaller t stat
+
+# 3.3.2 Test on White Noise with Trend
+intercept <- 1
+wnt <- wn + 1:TT + intercept
+plot(wnt, type='l')
+# NOTE: test allows for intercept and trend, hence: stationary (about trend 
+# line)
+adf.test(wnt) 
+
+# 3.3.3 Test on a Random Walk
+rw <- cumsum(rnorm(TT))
+plot(rw, type='l')
+adf.test(rw) # not stationary
+
+# 3.3.4 Test the Anchovy Data
+plot(anchovy.ts)
+adf.test(anchovy.ts) # Not stationary
+
+
+# 3.4 ADF Test Using ur.df() (urca)
