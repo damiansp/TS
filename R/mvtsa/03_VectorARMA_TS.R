@@ -18,7 +18,8 @@ data <- read.table('data/m-dec125910-6111.txt', header=T)
 head(data)
 PERIODS <- 12
 START_YEAR <- 1961
-x <- 100 * log(data[, 2:6] + 1)
+x <- 100 * log(data[, 2:5] + 1)
+head(x)
 rtn <- cbind(x$dec5, x$dec9)
 tdx <- c(1:nrow(rtn)) / PERIODS + START_YEAR
 par(mfcol=c(2, 1))
@@ -30,6 +31,7 @@ ccm(rtn)
 
 # 2 Specifying VMA Order
 # VMA order specification
+head(rtn)
 VMAorder(rtn[, 1:2], lag=20)
 
 
