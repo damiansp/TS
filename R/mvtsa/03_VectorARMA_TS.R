@@ -47,9 +47,11 @@ mq(r1, adj=4)
 
 
 # 3.2 Exact Likelihood Estimation
+head(rtn)
 m2 <- VMAe(rtn, q=1)
 MTSdiag(m2)
 
+# Ex. 3.4 Demo of differences between conditional and exact estimations of VMA
 #rtn <- cbind(ibm, ko)  # whatever ibm and ko are... 2 dfft stock returns??
 mq(rtn)
 yt <- diffM(rtn)
