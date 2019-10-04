@@ -28,3 +28,18 @@ plot(beer.decomp.lowess)
 
 
 # 2. Smoothing Time Series
+trend.pattern <- filter(beer, filter=c(1/8, 1/4, 1/4, 1/4, 1/8), sides=2)
+plot(beer)
+lines(trend.pattern, col=2)
+
+seasonals <- beer - trend.pattern
+plot(seasonals)
+
+plot(beer)
+lines(lowess(beer), col=2)
+
+plot(beer)
+exp.smooth.fit <- arima(beer, order=c(0, 1, 1))
+exp.smooth.fit
+preds <- beer - exp.smooth.fit$residuals
+lines(preds, col=2)
