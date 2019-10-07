@@ -53,6 +53,17 @@ MTSdiag(m2)
 
 # Ex. 3.4 Demo of differences between conditional and exact estimations of VMA
 #rtn <- cbind(ibm, ko)  # whatever ibm and ko are... 2 dfft stock returns??
+ibm <- read.csv('data/IBM.csv')$Adj.Close
+ko <- read.csv('data/KO.csv')$Adj.Close
+par(mfrow=c(2, 1))
+plot(ibm, type='l')
+plot(ko, type='l')
+n <- 250
+ibm <- log(ibm[2:n] / ibm[1:(n-1)])
+ko <- log(ko[2:n] / ko[1:(n-1)])
+plot(ibm, type='l')
+plot(ko, type='l')
+rtn <- cbind(ibm, ko)
 mq(rtn)
 yt <- diffM(rtn)
 mm <- ccm(yt)
