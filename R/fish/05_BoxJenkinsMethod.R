@@ -154,3 +154,11 @@ adf.test(anchovy.ts) # Not stationary
 
 
 # 3.4 ADF Test Using ur.df() (urca)
+
+# 3.4.1 Test on White Noise
+test <- urca::ur.df(wn, type='trend', lags=0)
+summary(test) # z.lag.1: p << 0.001; cannot reject stationarity)
+
+
+
+# 4. KPSS Test
