@@ -4,7 +4,7 @@ lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
        detach,
        character.only=T,
        unload=T)
-setwd('~/Learning/TS/basic')
+setwd('~/Learning/TS/R/basic')
 options(digits=5)
 library(MASS)
 
@@ -33,31 +33,37 @@ acf(rnorm(N))
 
 
 # 3 Random Walks----------------------------------------------------------------
-	# 4.3.7 Simulation
-	x = w = rnorm(1000)
-	for(t in 2:1000) { x[t] = x[t-1] + w[t] }
-	par(mfrow = c(2, 1))
-	plot(x, type = 'l')
-	acf(x)
+# 3.7 Simulation
+x <- w <- rnorm(1000)
+for(t in 2:1000) { x[t] <- x[t-1] + w[t] } 
+par(mfrow = c(3, 1))
+plot(x, type = 'l')
+acf(x)
 
 
 
-# 4.4 Fitted Models and Diagnostic Plots
-	# 4.4.1 Siumlated random walk series
-	acf(diff(x))
+# 4 Fitted Models and Diagnostic Plots------------------------------------------
 
-	# 4.4.2 Exchange rate series
-	plot(Z.ts)
-	plot(diff(Z.ts))
-	acf(diff(Z.ts))
 
-	Z.hw = HoltWinters(Z.ts, alpha = 1, gamma = 0)
-	plot(Z.hw)
-	acf(resid(Z.hw))
+# 4.1 Simulated random walk series
+acf(diff(x))
 
-	Z.hw2 = HoltWinters(Z.ts)
-	plot(Z.hw2)
-	acf(resid(Z.hw2))
+
+# 4.2 Exchange rate series
+Z <- read.table(paste(DATA, 'pounds_nz.dat', sep='/'))
+Z.ts <- ts(Z, start=1991, frequency=4)
+plot(Z.ts)
+plot(diff(Z.ts))
+acf(diff(Z.ts))
+
+Z.hw <- HoltWinters(Z.ts, alpha=1, gamma=0)
+par(mfrow=c(2, 1))
+plot(Z.hw)
+acf(resid(Z.hw))
+
+Z.hw2 <- HoltWinters(Z.ts)
+plot(Z.hw2)
+acf(resid(Z.hw2))
 
 	# 4.4.3 Random walk with drift
 	HP.dat = read.table(paste(web, 'HP.txt', sep = ''), header = T)
