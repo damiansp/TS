@@ -169,3 +169,15 @@ names(m1)
 resi <- m1$residuals # resids of VAR(2)
 mq(resi, adj=18) # adj used to adjust degrees of freedom (presumably forcing
                  # 0s at higher lags..?)
+
+
+
+# 5. VARMA Models
+# Computing autocovariance matrices for AMRA models
+phi <- matrix(
+  c( 0.816, -1.116, -0.623,  1.074, -0.643,  0.625,  0.592, -0.133), 2, 4)
+phi
+theta <- matrix(c(     0, -0.801, -1.248,      0), 2, 2)
+theta
+sig <- matrix(c(4, 2, 2, 5), 2, 2)
+VARMAcov(Phi=phi, Theta=theta, Sigma=sig, lag=2)
