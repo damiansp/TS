@@ -4,7 +4,7 @@ lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
        detach,
        character.only=T,
        unload=T)
-setwd('~/Learning/TS/Rfish')
+setwd('~/Learning/TS/R/fish')
 
 library(atsalibrary)
 library(forecast)
@@ -162,3 +162,18 @@ summary(test) # z.lag.1: p << 0.001; cannot reject stationarity)
 
 
 # 4. KPSS Test
+# Null Hypoth: data ARE stationary
+
+
+# 4.1 Test on Simulated Data
+kpss.test(wn)  # p > 0.1 (stationary)
+kpss.test(wnt) # p < 0.01 (non-stationary [has known trend])
+kpss.test(wnt, null='Trend') # p > 0.1 (stationary [about a trend])
+
+
+# 4.2 Test the Anchovy Data
+kpss.test(anchovy, null='Trend') # p.value < 0.01 (non-stationary)
+
+
+
+# 5. Dealing with Non-Stationarity
