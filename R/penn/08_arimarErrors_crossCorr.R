@@ -8,5 +8,3 @@ setwd('~/Learning/TS/R/penn')
 
 
 #library(astsa)
-
-# (Ex 6-1)
