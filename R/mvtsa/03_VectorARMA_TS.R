@@ -177,7 +177,11 @@ mq(resi, adj=18) # adj used to adjust degrees of freedom (presumably forcing
 phi <- matrix(
   c( 0.816, -1.116, -0.623,  1.074, -0.643,  0.625,  0.592, -0.133), 2, 4)
 phi
-theta <- matrix(c(     0, -0.801, -1.248,      0), 2, 2)
+theta <- matrix(c(0, -0.801, -1.248, 0), 2, 2)
 theta
 sig <- matrix(c(4, 2, 2, 5), 2, 2)
 VARMAcov(Phi=phi, Theta=theta, Sigma=sig, lag=2)
+
+
+
+# 6. Implications of VARMA Models
