@@ -151,31 +151,42 @@ lines(x=n:(n + 99), y=ci95[4,], lty=2, col=rgb(1, 0, 0.8))
 	
 	
 # 5.5 Correlogram of an AR(1) process
-	rho = function(k, alpha) alpha^k
-	layout(1:2)
-	plot( 0:10, rho(0:10, 0.7), type = 'l', xlab = 'k', 	
-		  ylab = expression(rho[k]), main = expression(alpha == 0.7) )
-	plot( 0:10, rho(0:10, -0.7), type = 'l', xlab = 'k', 
-		  ylab = expression(rho[k]), main = expression(alpha == -0.7) )
+rho <- function(k, alpha) alpha^k
+layout(1:2)
+plot(0:10, 
+     rho(0:10, 0.7), 
+     type='l', 
+     xlab='k', 	
+     ylab=expression(rho[k]), 
+     main=expression(alpha == 0.7) )
+plot(0:10, 
+     rho(0:10, -0.7), 
+     type='l', 
+     xlab='k', 
+     ylab=expression(rho[k]), 
+     main=expression(alpha == -0.7) )
+
 	
-	# 4.5.7 Simulation
-	x = w = rnorm(1000)
-	for(t in 2:1000) { x[t] = 0.7*x[t-1] + w[t] }
-	plot(x, type = 'l')
-	plot(x[1:100], type = 'l')
-	acf(x)
-	pacf(x)
+# 5.7 Simulation
+x <- w <- rnorm(1000)
+for(t in 2:1000) { x[t] <- 0.7*x[t - 1] + w[t] }
+plot(x, type='l')
+plot(x[1:100], type='l')
+acf(x)
+pacf(x)
 	
 
 
-# 4.6 Fitted Models
-	# 4.6.1 Model fitted to simulated series
-	plot(x, type = 'l')
-	x.ar = ar(x, method = 'mle')
-	x.ar$order	# 1
-	x.ar$ar	# 0.68 (cf. with 0.7 in the specified model above)
-	x.ar$ar + c(-2, 2)*sqrt(x.ar$asy.var)	# appx 95% CI [0.622, 0.716] 
-											# (includes 0.7)
+# 6 Fitted Models--------------------------------------------------------------
+	
+
+# 6.1 Model fitted to simulated series
+plot(x, type='l')
+x.ar <- ar(x, method = 'mle')
+x.ar$order	# 1
+x.ar$ar	# 0.68 (cf. with 0.7 in the specified model above)
+x.ar$ar + c(-2, 2)*c(sqrt(x.ar$asy.var)) # appx 95% CI [0.622, 0.716] 
+										 # (includes 0.7)
 
 	# 4.6.2 Exchange rate series: fitted AR model
 	Z.ar = ar(Z.ts)
