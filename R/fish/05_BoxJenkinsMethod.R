@@ -23,7 +23,7 @@ chinook <- chinook.month
 
 
 
-# 1. Box-Jenkins Method
+# 1. Box-Jenkins Method-------------------------------------------------------
 #    A) Model Form Selection
 #       1) Evaluate Stationarity
 #       2) Selection of Differencing Level (d) to Fix Stationarity
@@ -34,7 +34,8 @@ chinook <- chinook.month
 
 
 
-# 2. Stationarity
+# 2. Stationarity--------------------------------------------------------------
+
 
 # 2.1 Look at Stationarity in Simulated Data
 TT <- 100
@@ -123,7 +124,7 @@ plot(anchovy.ts, ylab='log(catch)')
 
 
 
-# 3. Dickey-Fuller and Augmented Dickey-Fuller Tests
+# 3. Dickey-Fuller and Augmented Dickey-Fuller Tests---------------------------
 
 
 # 3.3 ADF Test Using adf.test()
@@ -161,7 +162,7 @@ summary(test) # z.lag.1: p << 0.001; cannot reject stationarity)
 
 
 
-# 4. KPSS Test
+# 4. KPSS Test-----------------------------------------------------------------
 # Null Hypoth: data ARE stationary
 
 
@@ -176,4 +177,25 @@ kpss.test(anchovy, null='Trend') # p.value < 0.01 (non-stationary)
 
 
 
-# 5. Dealing with Non-Stationarity
+# 5. Dealing with Non-Stationarity---------------------------------------------
+adf.test(diff(rw))  # stationary (p < alpha)
+kpss.test(diff(rw)) # stationary (p > alpha)
+
+diff1dat <- diff(anchovy.ts)
+adf.test(diff1dat) # p = 0.051: stationary-ish 
+# (but includes unneeded trend param)
+kpss.test(diff1dat) # p ≥ 0.1: stationary
+k <- trunc((length(diff1dat)- 1)^(1/3))
+test <- ur.df(diff1dat, type='drift', lags=k)
+summary(test)
+
+
+# 5.1 ndiffs()
+ndiffs(anchovy.ts, test='kpss') # 1
+ndiffs(anchovy.ts, test='adf')  # 1
+
+
+
+# 6. Summary: Stationarity Testing---------------------------------------------
+
+
