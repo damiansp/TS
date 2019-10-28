@@ -188,62 +188,63 @@ x.ar$ar	# 0.68 (cf. with 0.7 in the specified model above)
 x.ar$ar + c(-2, 2)*c(sqrt(x.ar$asy.var)) # appx 95% CI [0.622, 0.716] 
 										 # (includes 0.7)
 
-	# 4.6.2 Exchange rate series: fitted AR model
-	Z.ar = ar(Z.ts)
-	mean(Z.ts)	# 2.82
-	Z.ar$order	# 1 (means Z.ar is AR(1))
-	Z.ar$ar	# coefficient for AR term = 0.89
-	Z.ar$ar + c(-2, 2) * sqrt(Z.ar$asy.var)	# appx 95%CI = [0.74, 1.04]
-	acf(Z.ar$res[-1])
-	#The model can now be reconstructed as:
-	# z.hat[t] = mean + coef(z[t-1] - mean) or 
-	# z.hat[t] = 2.82 + 0.89(z[t-1] - 2.8)
-	Z.ar
+# 4.6.2 Exchange rate series: fitted AR model
+Z.ar <- ar(Z.ts)
+mean(Z.ts)	# 20.5
+Z.ar$order	# 1 (means Z.ar is AR(1))
+Z.ar$ar	# coefficient for AR term = 0.85
+Z.ar$ar + c(-2, 2) * c(sqrt(Z.ar$asy.var))	# appx 95%CI = [0.74, 1.04]
+acf(Z.ar$res[-1])
+#The model can now be reconstructed as:
+# z.hat[t] = mean + coef(z[t-1] - mean) or 
+# z.hat[t] = 20.5 + 0.85(z[t-1] - 20.5)
+Z.ar
 	
-	par(mfrow = c(3,1))
-	plot(Z.ts)
-	abline(h = mean(Z.ts), col = 'grey')		
-	# begins at 2.92; length = 39
-	t = numeric(39)
-	t[1] = 2.92
+par(mfrow = c(3,1))
+plot(Z.ts)
+abline(h=mean(Z.ts), col='grey')		
+MU <- mean(Z.ts)
+LEN <- length(Z.ts)
+PHI <- Z.ar$ar
+t <- numeric(LEN)
+t[1] <- MU
 
-	for(i in 2:39){
-		t[i] = 2.82 + 0.89 * (t[i-1] - 2.8) + rnorm(1, 0, sd(Z.ts))
-	}
-	plot(t, type = 'l')
-	abline(h = mean(t), col='grey')
+for(i in 2:LEN){
+  t[i] <- MU + PHI * (t[i-1] - MU) + rnorm(1, 0, sd(Z.ts))
+}
+plot(t, type='l')
+abline(h=mean(t), col='grey')
 	
-	for(i in 2:39){
-		t[i] = 2.82 + 0.89 * (t[i-1] - 2.8) + rnorm(1, 0, sd(Z.ts))
-	}
-	plot(t, type = 'l')
-	abline(h = mean(t), col='grey')
+for(i in 2:LEN){
+  t[i] <- MU +PHI * (t[i-1] - MU) + rnorm(1, 0, sd(Z.ts))
+}
+plot(t, type='l')
+abline(h=mean(t), col='grey')
 
-	# 4.6.3 Global temperature series: fitted AR model
-	# Global = scan("http://www.massey.ac.nz/~pscowper/ts/global.dat")
-	Global.ts = ts(Global, st = c(1856, 1), end = c(2005, 12), fr = 12)
-	Global.ar = ar(aggregate(Global.ts, FUN = mean), method = 'mle')
-	mean(aggregate(Global.ts, FUN = mean))	# -0.138
-	Global.ar$order	# 4 = AR(4); regressive over prev 4 time steps
-	Global.ar$ar 	# coefs: 0.588, 0.126, 0.111, 0.268
-	acf(Global.ar$res[-(1:Global.ar$order)], lag = 50)
-	plot(Global.ts)
 	
-	plot(aggregate(Global.ts, FUN = mean), ylim = c(-1.5, 1))
-	t = numeric(length(aggregate(Global.ts, FUN = mean)))
-	t[1:4] = aggregate(Global.ts, FUN = mean)[1:4]
-	mu = mean(aggregate(Global.ts, FUN = mean))
-	stdev = sd(aggregate(Global.ts, FUN = mean))	
-
-	iters = 1000
-
-	for (iter in 1:iters) {
-		for (i in 5:length(t)) {
-			t[i] = mu + 0.588 * (t[i - 1] - mu) + 0.013 * (t[i - 2] - mu) +
-						0.111 * (t[i - 3] - mu) + 0.268 * (t[i - 4] - mu) +
-						rnorm(1, 0, stdev)
-		}
+# 6.3 Global temperature series: fitted AR model
+Global <- scan(paste(DATA, 'global.dat', sep='/'))
+Global.ts <- ts(Global, st=c(1856, 1), end=c(2005, 12), fr=12)
+Global.ar <- ar(aggregate(Global.ts, FUN=mean), method='mle')
+mean(aggregate(Global.ts, FUN=mean))	# -0.138
+Global.ar$order	# 4 = AR(4); regressive over prev 4 time steps
+Global.ar$ar 	# coefs: 0.588, 0.126, 0.111, 0.268
+acf(Global.ar$res[-(1:Global.ar$order)], lag=50)
+plot(Global.ts)
 	
-		lines(seq(1856, 2005, length = length(t)), t, col = rgb(1, 0, 0, 0.1))
-	}
-	lines(aggregate(Global.ts, FUN = mean))	
+plot(aggregate(Global.ts, FUN=mean), ylim=c(-1.5, 1))
+t <- numeric(length(aggregate(Global.ts, FUN=mean)))
+t[1:4] <- aggregate(Global.ts, FUN=mean)[1:4]
+mu <- mean(aggregate(Global.ts, FUN=mean))
+stdev <- sd(aggregate(Global.ts, FUN=mean))	
+
+iters <- 1000
+for (iter in 1:iters) {
+  for (i in 5:length(t)) {
+    t[i] <- (mu + 0.588 * (t[i - 1] - mu) + 0.013 * (t[i - 2] - mu) 
+             + 0.111 * (t[i - 3] - mu) + 0.268 * (t[i - 4] - mu) 
+             + rnorm(1, 0, stdev))
+  }
+  lines(seq(1856, 2005, length=length(t)), t, col=rgb(1, 0, 0, 0.05))
+}
+lines(aggregate(Global.ts, FUN=mean))	

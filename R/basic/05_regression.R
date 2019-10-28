@@ -1,23 +1,17 @@
-#===================#
-#          			#
-# Ch 5: Regression	#
-#          			#
-#===================#
-
-rm(list = ls())
-load('~/Desktop/R/Time Series/TimeSeries.RData')
-source('~/Desktop/SM/get.hist.quote2.R', chdir = TRUE)
-
+#=========#=========#=========#=========#=========#=========#=========#=========
+rm(list=ls())
+lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
+       detach,
+       character.only=T,
+       unload=T)
+setwd('~/Learning/TS/R/basic')
+options(digits=5)
+library(MASS)
 library(nlme)
 
-sp = get.hist.quote2( '^gspc', #start = '2004-01-01', 
-					 quote = 'AdjClose' )
-sp = ts(as.ts(sp), start = 1991, frequency = 365)
-sp2011 = get.hist.quote2( '^gspc', start = '2011-01-01', quote = 'AdjClose' )
-sp2011 = ts(as.ts(sp2011), start = 2011, frequency = 365)
-lode = get.hist.quote2('lode', start = '2011-01-01', quote = 'AdjClose')
-lode = ts(as.ts(lode), start = 2011, frequency = 365)
-web = 'http://staff.elena.aut.ac.nz/Paul-Cowpertwait/ts/'
+DATA <- paste0("https://raw.githubusercontent.com/dallascard/",
+               "Introductory_Time_Series_with_R_datasets/master/")
+
 
 # 5.2 Linear Models
 	# 5.2.3 Simualation
