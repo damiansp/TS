@@ -7,4 +7,6 @@ lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
 setwd('~/Learning/TS/R/penn')
 
 
-#library(astsa)
+library(astsa)
+
+
