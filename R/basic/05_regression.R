@@ -13,20 +13,25 @@ DATA <- paste0("https://raw.githubusercontent.com/dallascard/",
                "Introductory_Time_Series_with_R_datasets/master/")
 
 
-# 5.2 Linear Models
-	# 5.2.3 Simualation
-	z = w = rnorm(100, sd = 20)
-	for(t in 2:100) { z[t] = 0.8 * z[t - 1] + w[t] }	
-	Time = 1:100
-	x = 50 + 3 * Time + z
-	plot(x, xlab = 'time', type = 'l')
-	# mod: x[t] = 50 + 3t + z[t] where {z[t]} is AR(1), 
-	# 	z[t] = 0.8z[t - 1] + w[t], and w[t] is Gaussian white noise ~N(0, 20)
+
+# 2 Linear Models
+
+
+# 2.3 Simualation
+z <- w <- rnorm(100, sd=20)
+for (t in 2:100) { z[t] <- 0.8*z[t - 1] + w[t] }	
+Time <- 1:100
+x <- 50 + 3*Time + z
+plot(x, xlab='time', type='l')
+# mod: x[t] = 50 + 3t + z[t] where {z[t]} is AR(1), 
+# 	z[t] = 0.8z[t - 1] + w[t], and w[t] is Gaussian white noise ~N(0, 20)
 	
 
 
-# 5.3 Fitted Models
-	# 5.3.1 Model fitted to simulated data
+# 3 Fitted Models
+
+
+# 3.1 Model fitted to simulated data
 	x.lm = lm(x ~ Time)
 	coef(x.lm)	# 53.2, 2.99; cf 50 and 3 in specified model above
 	sqrt(diag(vcov(x.lm)))	# 6.34, 0.109
