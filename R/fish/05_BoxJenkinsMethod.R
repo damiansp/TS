@@ -201,3 +201,38 @@ ndiffs(anchovy.ts, test='adf')  # 1
 
 
 # 7. Estimating ARMA Parameters------------------------------------------------
+
+
+# 7.1 AR(2) Data
+# x[t] = 0.8x[t - 1] + 01x[t - 2] + e[t]
+# y[t] = x[t] + m
+m <- 1
+ar2 <- arima.sim(n=1000, model=list(ar=c(0.8, 0.1))) + m
+
+
+# 7.2 Fit with Arima()
+Arima(ar2, order=c(2, 0, 0), include.constant=T)
+# or with arima()
+arima(ar2, order=c(2, 0, 0), include.mean=T)
+
+
+# 7.3 AR(1) Simulated Data
+ar1 <- arima.sim(n=100, model=list(ar=c(0.8))) + m
+Arima(ar1, order=c(1, 0, 0), include.constant=T)
+
+
+# 7.4 ARMA(1, 2) Simulated Data
+# x[t] = 0.8x[t-1] + e[t] + 0.8e[t - 1] + 0.2e[t - 2]
+arma12 <- arima.sim(n=100, model=list(ar=c(0.8), ma=c(0.8, 0.2))) + m
+Arima(arma12, order=c(1, 0, 2), include.constant=T)
+
+
+# 7.5 These Functions Work for Data with Missing Values
+ar2miss <- arima.sim(n=100, model=list(ar=c(0.8, 0.1)))
+ar2miss[sample(100, 50)] <- NA
+plot(ar2miss, type='l')
+fit <- Arima(ar2miss, order=c(2, 0, 0))
+fit
+# NOTE: fitted() does not return expected val at time t.  It is the expected val
+# of y[t] given the data up to [t-1]
+lines(fitted(fit), col=2)
