@@ -8,9 +8,12 @@ setwd('~/Learning/TS/R/penn')
 DATA <- '../data'
 
 library(astsa)
+library(nlme)
 library(orcutt)
 
 
+
+# 1. Linear Regression Models with Autoregressive Errors
 x <- ts(scan(paste(DATA, 'econpredictor_1.dat', sep='/')))
 y <- ts(scan(paste(DATA, 'econmeasure_0.dat', sep='/')))
 plot.ts(x, y, xy.lines=F, xy.labels=F)
@@ -32,6 +35,22 @@ acf2(resid(adjustreg))
 cochrane.orcutt(regmodel)
 summary(cochrane.orcutt(regmodel))
 
+# Simulated
+x <- ts(scan(paste(DATA, 'l8.1.x.dat', sep='/')))
+y <- ts(scan(paste(DATA, 'l8.1.y.dat', sep='/')))
+plot(x, y, xy.lines=F, xy.labels=F, pch=20)
 
+trend <- time(y)
+regmodel <- lm(y ~ trend + x)
+summary(regmodel)
+dtx <- resid(lm(x ~ time(x))) # detrend x
+regmod2 <- lm(y ~ trend + dtx)
+summary(regmod2)
+acf2(resid(regmod2)) # both still signif at lag=1
 
-# Regression Model with ARIMA Errors
+adjreg <- sarima(y, 0, 0, 1, xreg=cbind(trend, dtx)) # MA(1) adj regression
+adjreg
+acf2(resid(adjreg$fit))
+summary(gls(y ~ dtx + trend, correlation=corARMA(form=~1, p=0, q=1)))
+# Should also compare alt hypoths. AR(1), ARMA(1, 1)
+
