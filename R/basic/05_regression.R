@@ -32,24 +32,24 @@ plot(x, xlab='time', type='l')
 
 
 # 3.1 Model fitted to simulated data
-	x.lm = lm(x ~ Time)
-	coef(x.lm)	# 53.2, 2.99; cf 50 and 3 in specified model above
-	sqrt(diag(vcov(x.lm)))	# 6.34, 0.109
-							# = SE on coefs [intercept and time]), cf:
-	summary(x.lm)	# note t-tests/significance not accurate here
-	
-	acf(resid(x.lm))
-	pacf(resid(x.lm))	# lag 1 signif. indicates AR(1) in residuals
+x.lm <- lm(x ~ Time)
+coef(x.lm)	# 53.2, 2.99; cf 50 and 3 in specified model above
+sqrt(diag(vcov(x.lm)))	# 6.34, 0.109
+						# = SE on coefs [intercept and time]), cf:
+summary(x.lm)	  # note t-tests/significance not accurate here	
+acf(resid(x.lm))  # lag suggest MA(1, 2)
+pacf(resid(x.lm)) # lag 1 signif. indicates AR(1) in residuals
 
-	#5.3.2 Model fitted to the temperature series (1970-2005)
-	Global = scan(paste(web, 'global.dat', sep = ''))
-	Global.ts = ts(Global, st = c(1856,1), end = c(2005,12), fr = 12)
-	Global.annual = aggregate(Global.ts, FUN = mean)
-	temp = window(Global.ts, start = 1970)
-	temp.lm = lm(temp ~ time(temp))
-	summary(temp.lm)	#again not that t-tests/signif not accurate here
-	confint(temp.lm)	#too narrow bc of autocorrelation:
-	acf(resid(temp.lm))
+	
+# 3.2 Model fitted to the temperature series (1970-2005)
+Global <- scan(paste(DATA, 'global.dat', sep = ''))
+Global.ts <- ts(Global, st=c(1856,1), end=c(2005,12), fr=12)
+Global.annual <- aggregate(Global.ts, FUN=mean)
+temp <- window(Global.ts, start=1970)
+temp.lm = lm(temp ~ time(temp))
+summary(temp.lm)	# again note that t-tests/signif not accurate here
+confint(temp.lm)	# too narrow bc of autocorrelation:
+acf(resid(temp.lm))
 
 
 
