@@ -236,3 +236,33 @@ fit
 # NOTE: fitted() does not return expected val at time t.  It is the expected val
 # of y[t] given the data up to [t-1]
 lines(fitted(fit), col=2)
+
+
+
+# 8. Estimating ARMA Orders----------------------------------------------------
+
+
+# 8.1 Example: Model Selection for AR(2) Data
+auto.arima(ar2)
+auto.arima(ar2miss)
+
+
+# 8.2 Fitting to 100 Simulated Data Sets
+save.fits <- rep(NA, 100)
+for (i in 1:100) {
+  a2 <- arima.sim(n=100, model=list(ar=c(0.8, 0.1)))
+  fit <- auto.arima(a2, seasonal=F, max.d=0, max.q=0)
+  save.fits[i] <- paste0(fit$arma[1], '-', fit$arma[2])
+}
+table(save.fits)
+
+
+# 8.3 trace=TRUE
+auto.arima(ar2, trace=T)
+
+
+# 8.4 stepwise=False (i.e., exhaustive up to order 5 by default)
+auto.arima(ar2, trace=T, stepwise=F) # may find a better fit
+
+
+# 8.5 Fit to Anchovy Data
