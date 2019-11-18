@@ -53,47 +53,52 @@ acf(resid(temp.lm))
 
 
 
-# 5.4 Generalized Least Squares
-	# 5.4.1 GLS to simulated series
-	x.gls = gls(x ~ Time, cor = corAR1(0.8))	# correlation specified in 
-												# model n 5.2.3 above
-	# NOTE: usually the AR(1) correlation will not be known. To estimate, 
-	# plot as ordinary least squares (lm()), and read of AR(1) from 
-	# acf(resid(lm.object))
-	summary(x.gls)	# cf. coefs: intercept = 53.2, Time = 3.0
-	sqrt(diag(vcov(x.gls)))	# same as SE in summary
-
-	# 5.4.2 Confidence interval for the trend in the temperature series
-	temp.gls = gls(temp ~ time(temp), cor = corAR1(0.7))	
-	# cor from acf(resid(temp.lm))
-	summary(temp.gls)
-	confint(temp.gls)
-
-
-
-# 5.5 Linear Models with Seasonal Variables
-	# 5.5.3 Example: Seasonal Model for the Temperature Series
-	Seas = cycle(temp)	# returns a vector of values 1:12 repeated for the 
-						#length of the entire TS (1-12 representing the 
-						# seasons/months)
-	Time = time(temp)	# returns year data for each entry in TS
-	temp.lm = lm(temp ~ 0 + Time + factor(Seas))
-	# equivalent to: temp.lm = lm(temp ~ -1 + Time + factor(Seas))
-	summary(temp.lm)
-
-	# Predict 2 years ahead
-	new.t = seq(2006, len = 2 * 12, by = 1 / 12)
-	alpha = coef(temp.lm)[1]	# Time
-	beta = rep(coef(temp.lm)[2:13], 2) # seasons
-	(alpha * new.t + beta)[1:12]
-	new.dat = data.frame(Time = new.t, Seas = rep(1:12, 2))
-	(temp.pred = predict(temp.lm, new.dat))
+# 4 Generalized Least Squares
 	
-	plot(temp, xlim = c(1970, 2008))
-	lines(temp.pred ~ new.t, col = 2)
+	
+# 4.1 GLS to simulated series
+x.gls <- gls(x ~ Time, cor=corAR1(0.8))	# correlation specified in 
+										# model in 2.3 above
+# NOTE: usually the AR(1) correlation will not be known. To estimate, 
+# plot as ordinary least squares (lm()), and read of AR(1) from 
+# acf(resid(lm.object))
+summary(x.gls)	# cf. coefs: intercept = 53.2, Time = 3.0
+sqrt(diag(vcov(x.gls)))	# same as SE in summary
+
+	
+# 4.2 Confidence interval for the trend in the temperature series
+temp.gls <- gls(temp ~ time(temp), cor=corAR1(0.7))	
+# cor from acf(resid(temp.lm))
+summary(temp.gls)
+confint(temp.gls)
 
 
-# 5.6 Harmonic Seasonal Models
+
+# 5. Linear Models with Seasonal Variables
+
+
+# 5.3 Example: Seasonal Model for the Temperature Series
+Seas <- cycle(temp)	# returns a vector of values 1:12 repeated for the 
+					# length of the entire TS (1-12 representing the 
+					# seasons/months)
+Time <- time(temp)	# returns year data for each entry in TS
+temp.lm <- lm(temp ~ 0 + Time + factor(Seas))
+# equivalent to: temp.lm = lm(temp ~ -1 + Time + factor(Seas))
+summary(temp.lm)
+
+# Predict 2 years ahead
+new.t <- seq(2006, len=2 * 12, by=1 / 12)
+alpha <- coef(temp.lm)[1]	        # Time
+beta <- rep(coef(temp.lm)[2:13], 2) # seasons
+(alpha * new.t + beta)[1:12]
+new.dat <- data.frame(Time = new.t, Seas=rep(1:12, 2))
+(temp.pred <- predict(temp.lm, new.dat))
+	
+plot(temp, xlim=c(1970, 2008))
+lines(temp.pred ~ new.t, col=2)
+
+
+# 6. Harmonic Seasonal Models
 TIME = seq(1, 12, len = 1000)
 plot(TIME, sin(2 * pi * TIME / 12), type = 'l')
 lines( TIME, sin(2 * pi * TIME / 12) + 0.2 * sin(2 * pi * 2 * TIME / 12) +
