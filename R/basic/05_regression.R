@@ -99,34 +99,39 @@ lines(temp.pred ~ new.t, col=2)
 
 
 # 6. Harmonic Seasonal Models
-TIME = seq(1, 12, len = 1000)
-plot(TIME, sin(2 * pi * TIME / 12), type = 'l')
-lines( TIME, sin(2 * pi * TIME / 12) + 0.2 * sin(2 * pi * 2 * TIME / 12) +
-	  0.1 * cos(2 * pi * 4 * TIME / 12), 
-	  col = 2)	# just an ex of type of seasonal variation that can be 
+TIME <- seq(1, 12, len=1000)
+plot(TIME, sin(2 * pi * TIME / 12), type='l', ylim=c(-1.1, 1.1))
+lines(TIME, 
+      (sin(2 * pi * TIME / 12) 
+       + 0.2 * sin(2 * pi * 2 * TIME / 12) 
+       + 0.1 * cos(2 * pi * 4 * TIME / 12)), 
+	  col=2)	# just an ex of type of seasonal variation that can be 
 	  			# modeled
-	# 5.6.1 Simulation
-	# set.seed(1)
-	TIME = 1:(10 * 12)	# ten periods of 12 seasons ea
-	w = rnorm(10 * 12, sd = 0.5)
 
-	Trend = 0.1 + 0.005 * TIME + 0.001 * TIME^2
-	Seasonal = sin(2 * pi * TIME / 12) + 0.2 * sin(2 * pi * TIME / 12) + 
-			   0.1 * sin(2 * pi * 4 * TIME / 12) + 
-			   0.1 * cos(2 * pi * 4 * TIME / 12)
-	x = Trend + Seasonal + w
-	par(mfrow = c(3,1))
-	plot(Trend ~ TIME, type = 'l')
-	plot(Seasonal ~ TIME, type = 'l')
-	plot((Trend + Seasonal) ~ TIME, type = 'l')
-	lines(x, col = 2)
+
+# 6.1 Simulation
+# set.seed(1)
+TIME <- 1:(10 * 12)	# ten periods of 12 seasons ea
+w <- rnorm(10 * 12, sd=0.5)
+Trend <- 0.1 + 0.005 * TIME + 0.001 * TIME^2
+Seasonal = (sin(2 * pi * TIME / 12) 
+            + 0.2 * sin(2 * pi * TIME / 12) 
+            + 0.1 * sin(2 * pi * 4 * TIME / 12) 
+            + 0.1 * cos(2 * pi * 4 * TIME / 12))
+x <- Trend + Seasonal + w
+par(mfrow=c(3, 1))
+plot(Trend ~ TIME, type='l')
+plot(Seasonal ~ TIME, type='l')
+plot((Trend + Seasonal) ~ TIME, type='l')
+lines(x, col=2)
+
 	
-	#5.6.2 Fit to simulated series
-	SIN = COS = matrix(nr = length(TIME), nc = 6)
-	for(i in 1:6) {
-		COS[, i] = cos(2 * pi * i * TIME / 12)
-		SIN[, i] = sin(2 * pi * i * TIME / 12)
-	}
+# 6.2 Fit to simulated series
+SIN <- COS <- matrix(nr = length(TIME), nc = 6)
+for (i in 1:6) {
+  COS[, i] = cos(2 * pi * i * TIME / 12)
+  SIN[, i] = sin(2 * pi * i * TIME / 12)
+}
 	
 	x.lm1 = lm( x ~ TIME + I(TIME^2) + COS[, 1] + SIN[, 1] + COS[, 2] + 
 				SIN[, 2] + COS[, 3] + SIN[, 3] + COS[, 4] + SIN[, 4] + 
