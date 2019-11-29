@@ -133,54 +133,56 @@ for (i in 1:6) {
   SIN[, i] = sin(2 * pi * i * TIME / 12)
 }
 	
-	x.lm1 = lm( x ~ TIME + I(TIME^2) + COS[, 1] + SIN[, 1] + COS[, 2] + 
-				SIN[, 2] + COS[, 3] + SIN[, 3] + COS[, 4] + SIN[, 4] + 
-				COS[, 5] + SIN[, 5] + COS[, 6] + SIN[, 6])
-	summary(x.lm1)
+x.lm1 <- lm(
+  x ~ TIME + I(TIME^2) + COS[, 1] + SIN[, 1] + COS[, 2] + SIN[, 2] + COS[, 3] 
+  + SIN[, 3] + COS[, 4] + SIN[, 4] + COS[, 5] + SIN[, 5] + COS[, 6] + SIN[, 6])
+summary(x.lm1)
+coef(x.lm1) / sqrt(diag(vcov(x.lm1)))	# any w/ value ≥2, equiv to 0.05 siginf
+
+x.lm2 <- lm(x ~ I(TIME^2) + SIN[, 1] + SIN[, 3] + COS[, 4])
+coef(x.lm2) / sqrt(diag(vcov(x.lm2)))
+summary(x.lm2)
+
+par(mfrow=c(1, 1))
+plot((Trend + Seasonal) ~ TIME, type='l')
+
+xv <- 1:120
+yv <- (0.107 + 0.00104*xv^2 + 1.19*sin(2*pi*xv/12) + 0.0568*sin(6*pi*xv/12) 
+       + 0.19*cos(8*pi*xv/12))
+lines(xv, yv, col=4)
+AIC(x.lm1)	# 179.7
+AIC(x.lm2)	# 169.23
 	
-	coef(x.lm1) / sqrt(diag(vcov(x.lm1)))	# any w/ value ≥2 acts a proxy 
-											# for signif at 0.05
-	x.lm2 = lm(x ~ I(TIME^2) + SIN[, 1] + SIN[, 3] + COS[, 4])
-	coef(x.lm2) / sqrt(diag(vcov(x.lm2)))
-	summary(x.lm2)
-
-	xv = 0:125
-	yv = 0.31 + 0.001*xv^2 + 1.1*sin(2*pi*xv/12) + 1.5*sin(6*pi*xv/12) +
-		 2.3*cos(8*pi*xv/12)
-	lines(xv, yv, col = 4)
-	AIC(x.lm1)	# 191.85
-	AIC(x.lm2)	# 173.83
-	
-	x.lm3 = step(x.lm1, direction = 'both')
-	summary(x.lm3)
-	yv = 0.30 + 0.001*xv^2 + 1.1*sin(2*pi*xv/12) + 1.5*sin(6*pi*xv/12) +
-		 2.3*cos(8*pi*xv/12) + 1.1*sin(8*pi*xv/12)
-	lines(yv, col = 5)
-
-	# 5.6.3 Harmonic model fitted to temperature series (1970-2005)
-	SIN = COS = matrix(nr = length(temp), nc = 6)
-	for(i in 1:6) {
-		COS[,i] = cos(2*pi*i*temp/12)
-		SIN[,i] = sin(2*pi*i*temp/12)
-	}
-	TIME = (time(temp) - mean(time(temp))) / sd(time(temp))
-	mean(time(temp))
-	sd(time(temp))
-	temp.lm1 = lm( temp ~ TIME + I(TIME^2) + COS[,1] + SIN[,1] + COS[,2] + 
-				   SIN[,2] + COS[,3] + SIN[,3] + COS[,4] + SIN[,4] + 
-				   COS[,5] + SIN[,5] + COS[,6] + SIN[,6] )
-	summary(temp.lm1)
-	coef(temp.lm1) / sqrt(diag(vcov(temp.lm1)))
-	temp.lm2 = step(temp.lm1, direction = 'both')
-	summary(temp.lm2)
+x.lm3 <- step(x.lm1, direction='both')
+summary(x.lm3)
+AIC(x.lm3) # 168.12
+yv <- (0.108 + 0.00104*xv^2 + 1.19*sin(2*pi*xv/12) + 0.19*cos(8*pi*xv/12))
+lines(yv, col=2)
 
 
-	plot(temp)
-	par(mfrow = c(3,1))
-	plot(time(temp), resid(temp.lm2), type = 'l')
-	abline(h = 0, col = 2)
-	acf(resid(temp.lm2))
-	pacf(resid(temp.lm2))
+# 6.3 Harmonic model fitted to temperature series (1970-2005)
+SIN <- COS <- matrix(nr=length(temp), nc=6)
+for(i in 1:6) {
+  COS[,i] <- cos(2*pi*i*temp/12)
+  SIN[,i] <- sin(2*pi*i*temp/12)
+}
+TIME <- (time(temp) - mean(time(temp))) / sd(time(temp))
+mean(time(temp))
+sd(time(temp))
+temp.lm1 <- lm( 
+  temp ~ TIME + I(TIME^2) + COS[, 1] + SIN[, 1] + COS[, 2] + SIN[, 2] + COS[, 3] 
+  + SIN[, 3] + COS[, 4] + SIN[, 4] + COS[, 5] + SIN[, 5] + COS[, 6] + SIN[, 6])
+summary(temp.lm1)
+coef(temp.lm1) / sqrt(diag(vcov(temp.lm1)))
+temp.lm2 <- step(temp.lm1, direction='both')
+summary(temp.lm2)
+
+plot(temp)
+par(mfrow=c(3,1))
+plot(time(temp), resid(temp.lm2), type='l')
+abline(h=0, col=2)
+acf(resid(temp.lm2))
+pacf(resid(temp.lm2))
 
 
 
@@ -421,4 +423,3 @@ lines((1:length(t)), t, col = 4)
 
 
 
-save.image(file = "~/Desktop/R/Time Series/TimeSeries.RData")
