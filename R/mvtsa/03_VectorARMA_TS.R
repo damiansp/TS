@@ -184,4 +184,20 @@ VARMAcov(Phi=phi, Theta=theta, Sigma=sig, lag=2)
 
 
 
-# 6. Implications of VARMA Models
+# 14. Tentative Order Identification
+# Ex 3.8
+p1 <- matrix(c(0.816, -1.116, -0.623, 1.074), 2, 2)
+p2 <- matrix(c(-0.643, 0.615, 0.592, -0.133), 2, 2)
+phi <- cbind(p1, p2)
+t1 <- matrix(c(0, -0.801, -1.248, 0), 2, 2)
+Sig <- matrix(c(4, 2, 2, 5), 2, 2)
+m1 <- VARMAsim(400, arlags=c(1, 2), malags=c(1), phi=phi, theta=t1, sigma=Sig)
+zt <- m1$series
+m2 <- Eccm(zt, maxp=5, maxq=6) # extended ccm
+names(m2)
+
+# Ex 3.9
+#da <- read.table('ushog.txt', header=T) # cannot locate!
+#head(da)
+#m1 <- Eccm(da, maxp=5, maxq=6)
+#VARorder(da, maxp=9) # VAR models only
