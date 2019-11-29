@@ -266,3 +266,22 @@ auto.arima(ar2, trace=T, stepwise=F) # may find a better fit
 
 
 # 8.5 Fit to Anchovy Data
+fit <- auto.arima(anchovy.ts)
+fit
+
+
+
+# 9. Check Residuals-----------------------------------------------------------
+res <- resid(fit)
+Box.test(res, type='Ljung-Box', lag=12, fitdf=2)
+checkresiduals(fit)
+
+
+
+# 10. Forecast from a Fitted ARIMA Model---------------------------------------
+fr <- forecast(fit, h=10)
+plot(fr) # shows 80 and 95% CIs
+
+
+
+# 11. Seasonal ARIMA Model-----------------------------------------------------
