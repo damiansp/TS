@@ -54,3 +54,9 @@ acf2(resid(adjreg$fit))
 summary(gls(y ~ dtx + trend, correlation=corARMA(form=~1, p=0, q=1)))
 # Should also compare alt hypoths. AR(1), ARMA(1, 1)
 
+
+
+# 2 Cross Correlation Functions and Lagged Regressions
+ccf(x, y)
+ccf.vals <- ccf(x, y)
+ccf.vals
