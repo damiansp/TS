@@ -285,3 +285,22 @@ plot(fr) # shows 80 and 95% CIs
 
 
 # 11. Seasonal ARIMA Model-----------------------------------------------------
+chinook.ts <- ts(chinook$log.metric.tons, start=c(1990, 1), frequency=12)
+
+
+# 11.1 Plot Seasonal Data
+plot(chinook.ts)
+
+
+# 11.2 auto.arima() for Seasonal TS
+train.dat <- window(chinook.ts, c(1990, 10), c(1998, 12))
+test.dat <- window(chinook.ts, c(1999, 1), c(1999, 12))
+fit <- auto.arima(train.dat)
+fit
+
+
+
+# 12. Forecast Using a Seasonal Model
+fr <- forecast(fit, h=12)
+plot(fr)
+points(test.dat, col=2, pch=16)
