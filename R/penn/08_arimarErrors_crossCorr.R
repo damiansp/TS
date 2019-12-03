@@ -5,7 +5,7 @@ lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
        character.only=T,
        unload=T)
 setwd('~/Learning/TS/R/penn')
-DATA <- '../data'
+DATA <- '../../data'
 
 library(astsa)
 library(nlme)
@@ -57,6 +57,34 @@ summary(gls(y ~ dtx + trend, correlation=corARMA(form=~1, p=0, q=1)))
 
 
 # 2 Cross Correlation Functions and Lagged Regressions
-ccf(x, y)
-ccf.vals <- ccf(x, y)
+soi <- ts(scan(paste(DATA, 'soi.dat', sep='/')))
+rec <- ts(scan(paste(DATA, 'recruit.dat', sep='/')))
+ccf.vals <- ccf(soi, rec)
 ccf.vals
+lag2.plot(soi, rec, 10)
+
+all.data <- ts.intersect(rec, 
+                         reclag1=lag(rec, -1), 
+                         reclag2=lag(rec, -2), 
+                         soilag5=lag(soi, -5), 
+                         soilag6=lag(soi, -6), 
+                         soilag7=lag(soi, -7), 
+                         soilag8=lag(soi, -8), 
+                         soilag9=lag(soi, -9),
+                         soilag10=lag(soi, -10))
+try.it <- lm(rec ~ soilag5 + soilag6 + soilag7 + soilag8 + soilag9 + soilag10,
+             data=all.data)
+try.it <- step(try.it)
+summary(try.it)
+acf2(resid(try.it))
+try.it2 <- lm(
+  rec ~ reclag1 + reclag2 + soilag5 + soilag6 + soilag7 + soilag8 + soilag9 
+    + soilag10,
+  data=all.data)
+try.it2 <- step(try.it2)
+summary(try.it2)
+acf2(resid(try.it2))
+try.it3 <- lm(rec ~ reclag1 + reclag2 + soilag5 + soilag6, data=all.data)
+try.it3 <- step(try.it3)
+summary(try.it3)
+acf2(resid(try.it3))

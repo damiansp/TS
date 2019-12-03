@@ -1,0 +1,12 @@
+#=========#=========#=========#=========#=========#=========#=========#=========
+rm(list=ls())
+lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
+       detach,
+       character.only=T,
+       unload=T)
+setwd('~/Learning/TS/R/penn')
+DATA <- '../../data'
+
+library(astsa)
+library(nlme)
+library(orcutt)
