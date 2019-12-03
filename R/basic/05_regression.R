@@ -8,6 +8,7 @@ setwd('~/Learning/TS/R/basic')
 options(digits=5)
 library(MASS)
 library(nlme)
+data(AirPassengers)
 
 DATA <- paste0("https://raw.githubusercontent.com/dallascard/",
                "Introductory_Time_Series_with_R_datasets/master/")
@@ -186,40 +187,42 @@ pacf(resid(temp.lm2))
 
 
 
-#5.7 Logarithmic Transformations
-	#5.7.2 Example using the air passenger series
-	data(AirPassengers)
-	AP = AirPassengers
-	plot(AP)
-	plot(log(AP))
+# 7. Logarithmic Transformations
 
-	SIN = COS = matrix(nr = length(AP), nc = 6)
-	for(i in 1:6) {
-		SIN[,i] = sin(2*pi*i*time(AP))
-		COS[,i] = cos(2*pi*i*time(AP))
-	}
-	TIME = (time(AP) - mean(time(AP))) / sd(time(AP))
-	mean(time(AP))	# 1955
 
-	sd(time(AP))	# 3.476
-	AP.lm1 = lm( log(AP) ~ TIME + I(TIME^2) + I(TIME^3) + I(TIME^4) + 
-				 COS[,1] + SIN[,1] + COS[,2] + SIN[,2] + COS[,3] + SIN[,3] + 
-				 COS[,4] + SIN[,4] + COS[,5] + SIN[,5] + COS[,6] + SIN[,6] )
-	AP.lm2 = step(AP.lm1, direction = 'both')
-	summary(AP.lm2)
-	AIC(AP.lm1)	# -447.95
-	AIC(AP.lm2)	# -453.46
-	acf(resid(AP.lm2))
-	pacf(resid(AP.lm2))
-	pacf(resid(AP.lm2))$acf	# 0.644
+# 7.2 Example using the air passenger series
+AP <- AirPassengers
+plot(AP)
+plot(log(AP))
 
-	AP.gls = gls( log(AP) ~ TIME + I(TIME^2) + I(TIME^4) + COS[,1] + 		
-				  SIN[,1] + COS[,2] + SIN[,2] + COS[,3] + SIN[,3] + COS[,4] + 
-				  SIN[,4] + SIN[,5], cor = corAR1(0.644) )
-	summary(AP.gls)
-	AP.ar = ar(resid(AP.lm2), order = 1, method = 'mle')
-	AP.ar$ar	# 0.646
-	acf(AP.ar$res[-1])
+SIN <- COS <- matrix(nr=length(AP), nc=6)
+for(i in 1:6) {
+  SIN[, i] <- sin(2*pi*i*time(AP))
+  COS[, i] <- cos(2*pi*i*time(AP))
+}
+TIME <- (time(AP) - mean(time(AP))) / sd(time(AP))
+mean(time(AP))	# 1955
+sd(time(AP))	# 3.476
+AP.lm1 <- lm(
+  log(AP) ~ TIME + I(TIME^2) + I(TIME^3) + I(TIME^4) + COS[, 1] + SIN[, 1] 
+    + COS[, 2] + SIN[, 2] + COS[, 3] + SIN[, 3] + COS[, 4] + SIN[, 4] + COS[, 5] 
+    + SIN[, 5] + COS[, 6] + SIN[, 6])
+AP.lm2 <- step(AP.lm1, direction='both')
+summary(AP.lm2)
+AIC(AP.lm1)	# -447.95
+AIC(AP.lm2)	# -453.46
+acf(resid(AP.lm2))
+pacf(resid(AP.lm2))
+pacf(resid(AP.lm2))$acf	# 0.644
+
+AP.gls <- gls(
+  log(AP) ~ TIME + I(TIME^2) + I(TIME^4) + COS[, 1] + SIN[, 1] + COS[, 2] 
+    + SIN[, 2] + COS[, 3] + SIN[, 3] + COS[, 4] + SIN[, 4] + SIN[, 5], 
+  cor=corAR1(0.644))
+summary(AP.gls)
+AP.ar <- ar(resid(AP.lm2), order=1, method='mle')
+AP.ar$ar	# 0.646
+acf(AP.ar$res[-1])
 
 
 
@@ -268,158 +271,3 @@ pacf(resid(temp.lm2))
 	AP.pred.ts = AP.pred.ts*empirical.correction.factor
 	par(mfrow = c(1,1))
 	ts.plot(log(AP), log(AP.pred.ts), col = 1:2)
-
-
-
-
-
-
-
-
-
-# Playing with S&P data
-plot(sp)
-sp.daily.vals = (as.vector(sp[!is.na(sp)]))
-n = length(sp.daily.vals)
-sp.daily.change = sp.daily.vals[2:n] / sp.daily.vals[1:(n - 1)]
-plot(sp, xlim = c(1991, 2019), ylim = c(0, 5000))
-iters = 1000
-n.forecast = 1000
-lastDate = attr(sp, 'tsp')[2]
-dates = seq(lastDate, lastDate + 4, length = n.forecast)
-
-fillNA = function(x) {
-	nas = which(is.na(x))
-	while(length(nas) > 0) {
-		x[nas] = x[nas - 1]
-		nas = which(is.na(x))
-	}
-	
-	return(x)
-}
-
-spFill = fillNA(sp)
-
-M = matrix(NA, nrow = n.forecast, ncol = iters)
-for (i in 1:iters) {
-	sp.forecast = numeric(n.forecast)
-	end = length(sp.daily.change)
-	rand.start = sample(1:(end - 365), 1)
-	samp.period = sp.daily.change[rand.start:(rand.start + 365)]
-	daily.changes = sample(samp.period, n.forecast, T)
-	sp.forecast[1] = sp.daily.vals[n] * daily.changes[1]
-	for (p in 2:n.forecast) {
-		sp.forecast[p] = sp.forecast[p - 1] * daily.changes[p]
-	}
-	lines(sp.forecast ~ dates, col = rgb(0,0,1,0.02))
-	M[, i] = sp.forecast
-}
-qs = apply(M, 1, quantile, probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
-lines(qs[1,] ~ dates, col = 1, lty = 1)
-lines(qs[4,] ~ dates, col = 1, lty = 1)
-lines(qs[7,] ~ dates, col = 1, lty = 1)
-
-lines(qs[2,] ~ dates, col = 2, lty = 3)
-lines(qs[6,] ~ dates, col = 2, lty = 3)
-
-lines(qs[3,] ~ dates, col = 2, lty = 2)
-lines(qs[5,] ~ dates, col = 2, lty = 2)
-abline(h = 0, col = 'grey')
-
-par(mfrow = c(1,1))
-
-decAdd = decompose(spFill)
-trendAdd = decAdd$trend
-seasAdd = decAdd$seasonal
-eAdd = decAdd$random
-
-decMult = decompose(spFill, type = 'mult')
-trendMult = decMult$trend
-seasMult = decMult$seasonal
-eMult = decMult$random
-
-sd(eAdd, na.rm = T)	# 45.20
-sd(eMult, na.rm = T)	# 0.041
-
-plot(decompose(spFill))
-plot(decompose(spFill, type = 'multiplicative'))
-
-par(mfrow = c(2, 1))
-plot(sp)
-lines(trendAdd + seasAdd, col = 2)
-plot(sp)
-lines(trendMult + seasMult, col = 2)
-
-plot(sp, xlim = c(2010, 2016))
-lines(trendAdd + seasAdd, col = 2)
-plot(sp, xlim = c(2010, 2016))
-lines(trendMult + seasMult, col = 2)
-
-sp.hw = HoltWinters(sp.daily.vals, beta = F, gamma = F) 
-plot(sp.hw)
-plot(sp.hw, xlim = c(6100, 6160), ylim = c(2050, 2150))
-sp.hw	# smoothing param = 0.93 or almost 1, meaning it basically just 	
-		# predicts that tomorrows val = today's value... of no use
-		
-SP.hw = HoltWinters(ts(sp.daily.vals, frequency = 250), seasonal = "mult")
-plot(SP.hw)
-plot(SP.hw, xlim = c(25, 27))
-SP.predict = predict(SP.hw, n.ahead = 1*250)
-ts.plot(ts(sp.daily.vals, frequency = 250), SP.predict, col = 1:2)
-ts.plot( ts(sp.daily.vals, frequency = 250), SP.predict, col = 1:2, 
-		 xlim = c(25.5, 26.75), ylim = c(500, 2500) )
-
-
-
-
-spNoNA = ts(sp[!is.na(sp)])
-sp2011NoNA = ts(sp2011[!is.na(sp2011)])
-lodeNoNA = ts(lode[!is.na(lode)])
-acf(spNoNA)
-acf(diff(spNoNA))
-acf(decompose(spFill)$random[183:8731])
-acf(diff(decompose(spFill)$random[183:8731]))
-
-ts.plot(sp2011, lode*350, col = 1:2)
-
-acf(cbind(diff(sp2011NoNA), diff(lodeNoNA)))
-
-
-
-sp.ar = ar(spNoNA, method = 'mle')
-sp.ar$order	# 12
-cbind( sp.ar$ar + c(-2)*sqrt(x.ar$asy.var), 
-	   sp.ar$ar, 
-	   sp.ar$ar + c(2)*sqrt(x.ar$asy.var) )
-sp.ar = ar(spNoNA, method = 'mle', order.max = 1)
-sp.ar
-
-
-par(mfrow = c(1, 1))
-plot(spNoNA, ylim = c(-5000, 7000))
-	
-t = numeric(length(spNoNA))
-t[1] = spNoNA[1]
-mu = mean(spNoNA)
-stdev = sd(spNoNA)
-
-iters = 1000
-
-for (iter in 1:iters) {
-	for (i in 2:length(t)) {
-		t[i] = mu + 0.9998 * (t[i - 1] - mu) + rnorm(1, 0, stdev)
-	}
-	
-	lines((1:length(t)), t, col = rgb(1, 0, 0, 0.01))
-}
-lines(spNoNA)	
-
-for (i in 2:length(t)) {
-	t[i] = mu + 0.9998 * (t[i - 1] - mu)
-}
-lines((1:length(t)), t, col = 4)
-
-
-
-
-
