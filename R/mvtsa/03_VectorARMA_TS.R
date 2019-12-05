@@ -8,13 +8,14 @@ setwd('~/Learning/TS/R')
 
 library(MTS)
 
+DATA <- '../data'
 
 
 # 1 Vector MA Models
 
 
 # 1.1 VMA(1) Model
-data <- read.table('data/m-dec125910-6111.txt', header=T)
+data <- read.table(paste(DATA, 'm-dec125910-6111.txt', sep='/'), header=T)
 head(data)
 PERIODS <- 12
 START_YEAR <- 1961
@@ -53,8 +54,8 @@ MTSdiag(m2)
 
 # Ex. 3.4 Demo of differences between conditional and exact estimations of VMA
 #rtn <- cbind(ibm, ko)  # whatever ibm and ko are... 2 dfft stock returns??
-ibm <- read.csv('data/IBM.csv')$Adj.Close
-ko <- read.csv('data/KO.csv')$Adj.Close
+ibm <- read.csv(paste(DATA, 'IBM.csv', sep='/'))$Adj.Close
+ko <- read.csv(paste(DATA, 'KO.csv', sep='/' ))$Adj.Close
 par(mfrow=c(2, 1))
 plot(ibm, type='l')
 plot(ko, type='l')
@@ -84,7 +85,7 @@ eigen(t2)
 # 5.3 Limiting Properties
 # Example 2.3
 # k = 3, p = 2, T = 125
-dat <- read.table('data/q-gdp-ukcaus.txt', header=T)
+dat <- read.table(paste(DATA, 'q-gdp-ukcaus.txt', sep='/'), header=T)
 head(dat)
 gdp <- log(dat[, 3:5])
 dim(gdp) # 126 x 3
@@ -117,7 +118,7 @@ Sig1 <- t(A) %*% A / (TT - 2) # MLE of Sigma_a
 Sig1
 
 # Estimation of VAR Models
-dat <- read.table('data/q-gdp-ukcaus.txt', header=T)
+dat <- read.table(paste(DATA, 'q-gdp-ukcaus.txt', sep='/'), header=T)
 gdp <- log(dat[, 3: 5])
 head(gdp)
 TT <- 126
@@ -138,19 +139,19 @@ m1 <- VAR(z, 2) # VAR(2) # i.e., model is:
 #                            -                -
 
 # Bayesian Estimation
-dat <- read.table('data/q-gdp-ukcaus.txt', header=T)
+dat <- read.table(paste(DATA, 'q-gdp-ukcaus.txt', sep='/'), header=T)
 x <- log(dat[, 3:5])
 dim(x) # 126, 3
 TT <- dim(x)[1]
 dx <- x[2:TT, ] - x[1:(TT - 1), ]
 dx <- dx * 100
-C M <- 0.1 * diag(7) # lambda = 0.01
+C <- 0.1 * diag(7) # lambda = 0.01
 V0 <- diag(3)      # V[0] = I[3]
 mm <- BVAR(dx, p=2, C, V0)  # c.f. prev output... very close
 
 
 # Ex. 2.5 Comparing Infromation Criteria
-dat <- read.table('data/q-gdp-ukcaus.txt', header=T)
+dat <- read.table(paste(DATA, 'q-gdp-ukcaus.txt', sep='/'), header=T)
 gdp <- log(dat[, 3: 5])
 head(gdp)
 TT <- 126
@@ -201,3 +202,28 @@ names(m2)
 #head(da)
 #m1 <- Eccm(da, maxp=5, maxq=6)
 #VARorder(da, maxp=9) # VAR models only
+
+# Ex 3.10 Order Selection
+z1 <- diff(log(ibm + min(ibm) + 1))
+z2 <- diff(log(ko + min(ko) + 1))
+zt <- cbind(z1, z2) * 100
+colnames(zt) <- c('IBM', 'KO')
+VARorder(zt)
+
+m1 <- VAR(zt, 7)
+m1a <- refVAR(m1, thres=1) # |t-ratio| < thres -> set to 0
+MTSdiag(m1a) # diagnostics
+Eccm(zt, maxp=7, maxq=7)
+
+m2 <- VARMA(zt, p=1, q=1) # 11 bic: 3.1393
+m2a <- refVARMA(m2, thres=0.8) # bic: 15.5!
+
+m3 <- VARMA(zt, p=2, q=2)
+m3a <- refVARMA(m3, thres=1) # bic: 3.1721
+
+MTSdiag(m2) # still not great
+names(m2)
+phi <- m2$Phi
+theta <- m2$Theta
+sigma <- m2$Sigma
+VARMAirf(Phi=phi, Theta=theta, Sigma=sigma, orth=F)
