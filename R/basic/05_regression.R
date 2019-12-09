@@ -226,21 +226,23 @@ acf(AP.ar$res[-1])
 
 
 
-#5.8 Non-Linear Models
-	#5.8.2 Example of a simulated and fitted non-linear series
-	#set.seed(1)
-	w = rnorm(100, sd = 10)
-	z = numeric(100)
-	for(t in 2:100) { z[t] = 0.7 * z[t-1] + w[t] }	# AR(1) error terms
-	Time = 1:100
-	f = function(x) { exp(1 + 0.05 * x) }
-	x = f(Time) + z
-	plot(x, type = 'l')
-	abline(h = 0)
+# 8. Non-Linear Models
+	
+	
+# 8.2 Example of a simulated and fitted non-linear series
+#set.seed(1)
+w <- rnorm(100, sd=10)
+z <- numeric(100)
+for (t in 2:100) { z[t] <- 0.7 * z[t - 1] + w[t] } # AR(1) error terms
+Time <- 1:100
+f <- function(x) { exp(1 + 0.05 * x) }
+x <- f(Time) + z
+par(mfrow=c(1, 1))
+plot(x, type = 'l')
+abline(h=0, col='grey')
 
-	x.nls = nls( x ~ exp(alp0 + alp1 * Time), 
-				 start = list(alp0 = 0.1, alp1 = 0.5) )
-	summary(x.nls)
+x.nls <- nls(x ~ exp(alp0 + alp1 * Time), start=list(alp0=0.1, alp1=0.5))
+summary(x.nls)
 
 
 
