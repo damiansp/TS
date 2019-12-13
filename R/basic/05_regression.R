@@ -246,30 +246,34 @@ summary(x.nls)
 
 
 
-# 5.9 Forecasting from Regression
-	# 5.9.2 Prediction in R
-	new.t = time(ts(start = 1961, end = c(1970,12), fr = 12))
-	TIME = (new.t - mean(time(AP))) / sd(time(AP))
-	SIN = COS = matrix(nr = length(new.t), nc = 6)
-	for(i in 1:6) {
-		SIN[,i] = sin(2*pi*i*new.t)
-		COS[,i] = cos(2*pi*i*new.t)
-	}
-	SIN = SIN[,-6]
-	new.dat = data.frame(TIME = as.vector(TIME), SIN = SIN, COS = COS)
-	AP.pred.ts = exp(ts(predict(AP.lm2, new.dat), st = 1961, fr = 12))
-	par(mfrow = c(2,1))
-	ts.plot(log(AP), log(AP.pred.ts), col = 1:2)
-	ts.plot(AP, AP.pred.ts, col = 1:2)
+# 9. Forecasting from Regression
+	
+	
+# 9.2 Prediction in R
+new.t <- time(ts(start=1961, end=c(1970, 12), fr=12))
+TIME <- (new.t - mean(time(AP))) / sd(time(AP))
+SIN <- COS <- matrix(nr=length(new.t), nc=6)
+for(i in 1:6) {
+  SIN[,i] <- sin(2*pi*i*new.t)
+  COS[,i] <- cos(2*pi*i*new.t)
+}
+SIN <- SIN[, -6]
+new.dat <- data.frame(TIME=as.vector(TIME), SIN=SIN, COS=COS)
+AP.pred.ts <- exp(ts(predict(AP.lm2, new.dat), st=1961, fr=12))
+par(mfrow=c(2, 1))
+ts.plot(log(AP), log(AP.pred.ts), col=1:2)
+ts.plot(AP, AP.pred.ts, col=1:2)
 
 
 
- # 5.10 Inverse Transform and Bias Correction
-	# 5.10.3 Example useing the air passenger data
-	summary(AP.lm2)	# r.sq = 0.989
-	sigma = summary(AP.lm2)$sigma	# resid SE
-	(lognorm.correction.factor = exp((1/2)*sigma^2)) #1.0011
-	(empirical.correction.factor = mean(exp(resid(AP.lm2)))) #1.0010
-	AP.pred.ts = AP.pred.ts*empirical.correction.factor
-	par(mfrow = c(1,1))
-	ts.plot(log(AP), log(AP.pred.ts), col = 1:2)
+# 10. Inverse Transform and Bias Correction
+	
+	
+# 10.3 Example useing the air passenger data
+summary(AP.lm2)	# r.sq = 0.989
+sigma <- summary(AP.lm2)$sigma	# resid SE
+(lognorm.correction.factor <- exp((1 / 2) * sigma^2)) #1.0011
+(empirical.correction.factor <- mean(exp(resid(AP.lm2)))) #1.0010
+AP.pred.ts <- AP.pred.ts * empirical.correction.factor
+par(mfrow=c(1, 1))
+ts.plot(log(AP), log(AP.pred.ts), col=1:2)
