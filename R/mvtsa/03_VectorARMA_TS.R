@@ -227,3 +227,24 @@ phi <- m2$Phi
 theta <- m2$Theta
 sigma <- m2$Sigma
 VARMAirf(Phi=phi, Theta=theta, Sigma=sigma, orth=F)
+
+
+# Housing Starts and Mortgage Rate 
+# Data not available, replace with stock data....
+head(zt) # 
+dzt <- diffM(zt)
+VARorder(dzt)
+m1 <- VAR(dzt, 13)
+m1a <- refVAR(m1, thres=1) # reduce
+MTSdiag(m1a)
+Eccm(dzt, maxp=4, maxq=4)
+m2 <- VARMA(dzt, p=2, q=2)
+m2a <- refVARMA(m2, thres=0.8)
+m2b <- refVARMA(m2a, thres=1)
+m2c <- refVARMA(m2b, thres=1)
+MTSdiag(m2a)
+m3 <- VARMA(dzt, p=2, q=1)
+m3a <- refVARMA(m3, thres=0.6)
+MTSdiag(m3a)
+res <- m1a$residuals
+mq(res, adj=14)
