@@ -7,11 +7,13 @@ lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
 setwd('~/Learning/TS/R/frapo')
 
 library(fBasics)
+library(FRAPO)
 library(ghyp)
+library(lmomco)
 library(timeSeries)
 
 data(DowJones30)
-
+data(SP500)
 
 
 # 6. Applications of the GHD to Risk Modeling
@@ -129,3 +131,91 @@ legend('topright',
        legend=c('Empirical', 'GHD', 'HYP', 'NIG', 'Normal'),
        col=c(1, 2, 4, 3, 5),
        lty=1)
+
+
+# 6.3 Stylized Facts Revisited
+# Code 6.3 Shape Triangle for HYP Distribution
+rd <- c(1, 5, 10, 20, 40)
+y.rets <- na.omit(
+  matrix(unlist(lapply(rd, function(x) { diff(log(y), lag=x) })),
+         ncol=5))
+
+# Get xi/chi coefs
+chi.xi <- function(x) {
+  param <- coef(x, type='alpha.delta')
+  rho <- param[['beta']] / param[['alpha']]
+  zeta <- param[['delta']] + sqrt(param[['alpha']]^2 - param[['beta']]^2)
+  xi <- 1 / sqrt(1 + zeta)
+  chi <- xi * rho
+  res <- c('chi'=chi, 'xi'=xi)
+}
+
+# HYP Fitting
+hyp.fits <- apply(y.rets, 2, fit.hypuv, symmetric=F)
+pts <- matrix(unlist(lapply(hyp.fits, chi.xi)), ncol=2, byrow=T)
+
+# Shape Triangle
+col.def <- c('black', 'blue', 'red', 'darkgreen', 'orange')
+leg.def <- c(paste(rd, rep('day return', 5)))
+plot(pts, 
+     ylim=c(-0.2, 1.2), 
+     xlim=c(-1.2, 1.2), 
+     col=col.def, 
+     pch=16, 
+     ylab=expression(xi), 
+     xlab=expression(chi))
+lines(x=c(0, -1), y=c(0, 1))
+lines(x=c(0, 1), y=c(0, 1))
+lines(x=c(-1, 1), y=c(1, 1))
+legend('bottomright', legend=leg.def, col=col.def, pch=16)
+text(x=0, y=1.05, label='LaPlace')
+text(x=-1, y=1.05, label='Exponential')
+text(x=1, y=1.05, label='Exponential')
+text(x=0, y=-0.1, label='Normal')
+text(x=-0.6, y=0.5, label='Left-skewed Hyperbolic', srt=302)
+text(x=0.6, y=0.5, label='Right-skewed Hyperbolic', srt=57)
+
+
+
+# 7. Applications of the GLD to Risk Modeling and Data Analysis
+
+
+# 7.1 VaR for a Single Stock
+idx <- SP500[, 'QCOM']
+L <- -1 * returnseries(idx, method='discrete', trim=T)
+
+# Compute VaR (Normal & GLD) 99%; Moving Window
+WEEKS <- 52
+ep <- (2 * WEEKS):length(L)
+sp <- 1:length(ep)
+level <- 0.99
+VaR <- matrix(NA, ncol=2, nrow=length(ep))
+for (i in 1:length(sp)) {
+  x <- L[sp[i]:ep[i]]
+  lmom <- lmom.ub(x)
+  fit <- pargld(lmom)
+  VaR.Gld <- quagld(level, fit)
+  Var.nor <- qnorm(level, mean(x), sd(x))
+  VaR[i, ] <- c(VaR.Gld, Var.nor)
+  print(paste('Results for', ep[i], ':', VaR.Gld, 'and', Var.nor))
+}
+
+# Summarize Results
+res <- cbind(L[(2*WEEKS + 1):length(L)], VaR[-nrow(VaR), ])
+colnames(res) <- c('Loss', 'VaR.Gld', 'VaR.norm')
+
+# Plot and Backtest
+plot(res[, 'Loss'], 
+     xlab='Time', 
+     ylab='Loss (%)', 
+     type='l',
+     ylim=c(-15, max(res)))
+abline(h=0, col='grey')
+lines(res[, 'VaR.Gld'], col=4, lwd=2)
+lines(res[, 'VaR.norm'], col=2, lwd=2)
+legend('bottomright', 
+       legend=c('Losses', 'VaR GLD', 'VaR Normal'),
+       col=c(1, 4, 2),
+       lty=1,
+       lwd=c(1, 2, 2),
+       bty='n')
