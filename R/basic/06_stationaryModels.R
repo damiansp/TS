@@ -60,20 +60,23 @@ acf(x)
 
 
 
-# 6.4 Fitted MA Models
-	# 6.4.1 Model fitted to simulated series
-	x.ma = arima(x, order = c(0, 0, 3))	# arima order = (AR, I, MA)
-	# Can force mean to 0 with arima(..., include.mean = F), though generally
-	# not advisable
-	x.ma
+# 4 Fitted MA Models
 
-	# 6.4.2 Exchange rate series: fitted MA model
-	x = read.table(paste(web, 'pounds_nz.dat', sep = ''))
-	x.ts = ts(x, st = 1991, fr = 4)
-	plot(x.ts)
-	x.ma = arima(x.ts, order = c(0, 0, 1))
-	x.ma
-	acf(x.ma$resid[-1])
+
+# 4.1 Model fitted to simulated series
+x.ma <- arima(x, order=c(0, 0, 3))	# arima order = (AR, I, MA)
+# Can force mean to 0 with arima(..., include.mean=F), though generally
+# not advisable
+x.ma
+
+
+# 4.2 Exchange rate series: fitted MA model
+x <- read.table(paste(DATA, 'pounds_nz.dat', sep=''))
+x.ts <- ts(x, st=1991, fr=4)
+plot(x.ts)
+x.ma = arima(x.ts, order=c(0, 0, 1))
+x.ma
+acf(x.ma$resid[-1])
 
 
 
