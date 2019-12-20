@@ -3,76 +3,60 @@
 #  Ch 6: Stationary Models  #
 #                           #
 #===========================#
-
 rm(list = ls())
-load('~/Desktop/R/Time Series/TimeSeries.RData')
-source('~/Desktop/SM/get.hist.quote2.R')
+lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
+       detach,
+       character.only=T,
+       unload=T)
+setwd('~/Learning/TS/R/basic')
 
 library(nlme)
 
-#sp = get.hist.quote2( '^gspc', #start = '2004-01-01', 
-#					 quote = 'AdjClose' )
-#sp = ts(as.ts(sp), start = 1991, frequency = 365)
-#sp2011 = get.hist.quote2( '^gspc', start = '2011-01-01', quote = 'AdjClose' )
-#sp2011 = ts(as.ts(sp2011), start = 2011, frequency = 365)
-#lode = get.hist.quote2('lode', start = '2011-01-01', quote = 'AdjClose')
-#lode = ts(as.ts(lode), start = 2011, frequency = 365)
-web = 'http://staff.elena.aut.ac.nz/Paul-Cowpertwait/ts/'
+DATA <- paste0("https://raw.githubusercontent.com/dallascard/",
+               "Introductory_Time_Series_with_R_datasets/master/")
 
 
 
-# 6.3 Moving Average Models
-	# 6.3.2 R examples: correlogram and simulation
-	# Autocorrelation function for MA process at lag k
-	rho = function(k, beta) { 
-		# order of the MA process
-		q = length(beta) - 1	
-
-		if (k > q) {
-			ACF = 0
-		} else {
-			s1 = s2 = 0
-
-			for (i in 1:(q - k + 1)) {
-				s1 = s1 + beta[i] * beta[i + k]
-			}
-			
-			for (i in 1:(q + 1)) {
-				s2 = s2 + beta[i]^2
-			}
-
-			ACF = s1 / s2
-		}
-
-		ACF	
-	}
-
-	# Ex. for an MA(3) with params beta[1] = 0.7, beta[2] = 0.5 and beta[3] = 
-	# 0.2:
-	beta = c(1, 0.7, -0.7, 0.5, -0.5, 0.2, -0.2)
-	# If betas are all + will have exp decrease, if all - will have dampened
-	# ocillation, but becomes 0 at lenght(beta)
-	rho.k = rep(1, 10)
-
-	for (k in 1:10) {
-		rho.k[k] = rho(k, beta)
-	}
-
-	plot(0:10, c(1, rho.k), pch = 4, type = 'b', ylab = expression(rho[k]))
-	abline(h = 0, col = 2)
+# 3 Moving Average Models
 	
-	# Simulate an MA(3) process:
-	#set.seed(1)
-	b = c(0.8, 0.6, 0.4) # 3 coeffs b/c MA(3)
-	x = w = rnorm(1000)
-	for (t in 4:1000) {
-		for (j in 1:3) {
-			x[t] = x[t] + b[j] * w[t - j]
-		}
-	}
-	par(mfrow=c(2, 1))
-	plot(x, type = 'l')
-	acf(x)
+	
+# 3.2 R examples: correlogram and simulation
+# Autocorrelation function for MA process at lag k
+rho <- function(k, beta) { 
+  # order of the MA process
+  q <- length(beta) - 1	
+  if (k > q) { ACF <- 0 } 
+  else {
+    s1 <- s2 <- 0
+    for (i in 1:(q - k + 1)) { s1 <- s1 + beta[i] * beta[i + k] }
+	for (i in 1:(q + 1)) { s2 <- s2 + beta[i]^2 }
+    ACF <- s1 / s2
+  }
+  ACF	
+}
+
+# Ex. for an MA(3) with params beta[1] = 0.7, beta[2] = 0.5 and beta[3] = 
+# 0.2:
+beta <- c(1, 0.7, -0.7, 0.5, -0.5, 0.2, -0.2)
+# If betas are all + will have exp decrease, if all - will have dampened
+# ocillation, but becomes 0 at lenght(beta)
+rho.k <- rep(1, 10)
+for (k in 1:10) { rho.k[k] = rho(k, beta) }
+
+plot(0:10, c(1, rho.k), pch=4, type='b', ylab=expression(rho[k]))
+abline(h=0, col=2)
+	
+# Simulate an MA(3) process:
+#set.seed(1)
+b <- c(0.8, 0.6, 0.4) # 3 coeffs b/c MA(3)
+x <- w <- rnorm(1000)
+for (t in 4:1000) {
+  for (j in 1:3) { x[t] <- x[t] + b[j] * w[t - j] }
+}
+
+par(mfrow=c(2, 1))
+plot(x, type='l')
+acf(x)
 
 
 
