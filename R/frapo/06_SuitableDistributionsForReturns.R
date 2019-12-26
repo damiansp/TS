@@ -13,6 +13,7 @@ library(lmomco)
 library(timeSeries)
 
 data(DowJones30)
+data(INDTRACK3)
 data(SP500)
 
 
@@ -219,3 +220,40 @@ legend('bottomright',
        lty=1,
        lwd=c(1, 2, 2),
        bty='n')
+       
+       
+# Code 6.5: FTSE 100 Stocks: Shape Triangle of Standardized GLD
+head(INDTRACK3)
+P <- INDTRACK3[, -1]
+R <- returnseries(P, method='discrete', trim=T)
+
+# Fit and calc. beta and lambda
+fit <- apply(R, 2, gldFit, method='rob', doplot=F, trace=F)
+delta.beta.param <- matrix(
+  unlist(
+    lapply(
+      fit, 
+      function(x) {
+      	ests <- x@fit$estimate[c(3, 4)]
+      	res <- c(ests[2] - ests[1], ests[1] + ests[2])
+      	res
+      })),
+  ncol=2,
+  byrow=T)
+
+# Shape Triangle
+plot(delta.beta.param,
+     xlim=c(-2, 2), 
+     ylim=c(-2, 0),
+     xlab=expression(delta == lambda[4] - lambda[3]),
+     ylab=expression(beta == lambda[3] + lambda[4]),
+     pac=19,
+     cex=0.5)
+segments(-2, -2, 0, 0, col='grey', lwd=0.8, lty=2)
+segments(2, -2, 0, 0, col='grey', lwd=0.8, lty=2)
+segments(0, -2, 0, 0, col=4, lwd=0.8, lty=2) # divides l- vs r-skew distribs.
+segments(-0.5, -0.5, 0.5, -0.5, col=2, lwd=0.8, lty=2)
+segments(-1, -1, 1, -1, col=2, lwd=0.8, lty=2)
+# top segment of triangle: finite var and kurtosis
+# middle: infinite kurtosis but finite var
+# bottom: infinite kurtosis and var
