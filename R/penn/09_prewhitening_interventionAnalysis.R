@@ -29,3 +29,7 @@ ar1.coef <- ar1mod$coef
 pwx <- ar1mod$residuals
 newpwy <- filter(y, filter=c(1, -(1 + ar1.coef), ar1.coef), sides=1)
 ccf(pwx, newpwy, na.action=na.omit)
+
+
+
+# Intervention Analysis
