@@ -75,55 +75,58 @@ acf(x.ma$resid[-1])
 
 
 
-# 6.6 ARMA Models: Empirical Analysis
-	# 6.6.1 Simulation and fitting
-	#set.seed(1)
-	x = arima.sim(n = 10000, list(ar = -0.6, ma = 0.5))
-	# x[t] = -0.6*x[t-1] + w[t] + 0.5*w[t-1]
-	plot(x)
-	lines(lowess(x), col = 2)
-	coef(arima(x, order=c(1,0,1)))
-	acf(resid(arima(x, order=c(1,0,1))))
-
-	# 6.6.2 Exchange rate series
-	x.ma = arima(x.ts, order = c(0, 0, 1))		# MA(1) model
-	x.ar = arima(x.ts, order = c(1, 0, 0))		# AR(1) model
-	x.arma = arima(x.ts, order = c(1, 0, 1))	# ARMA(1, 1) model
-	AIC(x.ma)	#278.8
-	AIC(x.ar)	#246.0
-	AIC(x.arma)	#243.3
-
-	x.arma
-	acf(resid(x.arma))
-
-	# 6.6.3 Electricity production series
-	CBE = read.table(paste(web, 'cbe.dat', sep = ''), header = T)
-	matplot(CBE, type = 'l', lty = 1)
-	Elec.ts = ts(CBE[,3], start = 1958, freq = 12)
-	Time = 1:length(Elec.ts)
-	Imth = cycle(Elec.ts)
-	Elec.lm = lm(log(Elec.ts) ~ Time + I(Time^2) + factor(Imth))
-	par(mfrow = c(2, 2))
-	plot(Elec.lm)
+# 6 ARMA Models: Empirical Analysis
 	
-	par(mfrow = c(1, 1))
-	acf(resid(Elec.lm))
+	
+# 6.1 Simulation and fitting
+#set.seed(1)
+x <- arima.sim(n=10000, list(ar=-0.6, ma=0.5))
+# x[t] = -0.6*x[t-1] + w[t] + 0.5*w[t-1]
+plot(x)
+lines(lowess(x), col=2)
+coef(arima(x, order=c(1,0,1)))
+acf(resid(arima(x, order=c(1, 0, 1))))
 
-	best.order = c(0, 0, 0)
-	best.aic = Inf
-	for(i in 0:2) {
-		for(j in 0:2) {
-			fit.aic = AIC(arima(resid(Elec.lm), order = c(i, 0, j)))
-			if(fit.aic < best.aic) {
-				best.order = c(i, 0, j)
-				best.arma = arima(resid(Elec.lm), order = best.order)
-				best.aic = fit.aic
-			}
-		}
-	}
 
-	best.order	#(2, 0, 0)
-	acf(resid(best.arma))
+# 6.2 Exchange rate series
+x.ma <- arima(x.ts, order=c(0, 0, 1))	# MA(1) model
+x.ar <- arima(x.ts, order=c(1, 0, 0))	# AR(1) model
+x.arma <- arima(x.ts, order=c(1, 0, 1))	# ARMA(1, 1) model
+AIC(x.ma)	#278.8
+AIC(x.ar)	#246.0
+AIC(x.arma)	#243.3
+x.arma
+acf(resid(x.arma))
+
+	
+# 6.3 Electricity production series
+CBE <- read.table(paste(DATA, 'cbe.dat', sep = ''), header = T)
+matplot(CBE, type='l', lty=1)
+Elec.ts <- ts(CBE[, 3], start=1958, freq=12)
+Time <- 1:length(Elec.ts)
+Imth <- cycle(Elec.ts)
+Elec.lm <- lm(log(Elec.ts) ~ Time + I(Time^2) + factor(Imth))
+
+par(mfrow=c(2, 2))
+plot(Elec.lm)
+par(mfrow=c(1, 1))
+acf(resid(Elec.lm))
+
+best.order <- c(0, 0, 0)
+best.aic <- Inf
+for (i in 0:2) {
+  for (j in 0:2) {
+    fit.aic <- AIC(arima(resid(Elec.lm), order = c(i, 0, j)))
+    if (fit.aic < best.aic) {
+      best.order <- c(i, 0, j)
+      best.arma <- arima(resid(Elec.lm), order=best.order)
+      best.aic <- fit.aic
+    }
+  }
+}
+
+best.order	#(2, 0, 0)
+acf(resid(best.arma))
 
 	# predict:
 	new.time = seq(length(Elec.ts), length = 36)
