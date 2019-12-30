@@ -112,3 +112,12 @@ nile.mod.3 <- list(B=matrix(1),
                    tinitx=0)
 kem.3 <- MARSS(dat, model=nile.mod.3)
 c(coef(kem.3,  type='vector'), LL=kem.3$logLik, AICc=kem.3$AICc)
+
+
+
+# 3. The StructTS Function
+trees <- window(treering, start=0)
+fitts <- StructTS(trees, type='level')
+#fitem <- MARSS(as.vector(trees), nile.mod.2)
+fitbf <- MARSS(as.vector(trees), method='BFGS')
+
