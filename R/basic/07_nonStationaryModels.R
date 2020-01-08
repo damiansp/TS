@@ -1,17 +1,17 @@
-#===============================#
-#                               #
-#  Ch 7: Non-Stationary Models  #
-#                               #
-#===============================#
+#=========#=========#=========#=========#=========#=========#=========#=========rm(list = ls())
+lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
+       detach,
+       character.only=T,
+       unload=T)
+setwd('~/Learning/TS/R/basic')
 
-rm(list = ls())
-load('~/Desktop/R/Time Series/TimeSeries.RData')
-source('~/Desktop/SM/get.hist.quote2.R')
-
-#options(digits = 5)
-library(nlme)
 library(MASS)
+library(nlme)
 library(tseries)
+
+DATA <- paste0("https://raw.githubusercontent.com/dallascard/",
+               "Introductory_Time_Series_with_R_datasets/master/")
+
 
 # 7.2 Non-Seasonal ARIMA Models
 	# 7.2.1 Differencing and the electricity series

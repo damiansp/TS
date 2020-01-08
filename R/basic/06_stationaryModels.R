@@ -128,27 +128,21 @@ for (i in 0:2) {
 best.order	#(2, 0, 0)
 acf(resid(best.arma))
 
-	# predict:
-	new.time = seq(length(Elec.ts), length = 36)
-	new.data = data.frame(Time = new.time, Imth = rep(1:12, 3))
-	predict.lm = predict(Elec.lm, new.data)
-	predict.arma = predict(best.arma, n.ahead = 36)
-	elec.pred = ts( exp(predict.lm + predict.arma$pred), start = 1991,
-					freq = 12 )
-	ts.plot(cbind(Elec.ts, elec.pred), col = 1:2)
+# predict:
+new.time <- seq(length(Elec.ts), length=36)
+new.data <- data.frame(Time=new.time, Imth=rep(1:12, 3))
+predict.lm <- predict(Elec.lm, new.data)
+predict.arma <- predict(best.arma, n.ahead=36)
+elec.pred <- ts(exp(predict.lm + predict.arma$pred), start=1991, freq=12)
+ts.plot(cbind(Elec.ts, elec.pred), col=1:2)
 
-	# 6.6.4 Wave tank data
-	wave.dat = read.table(paste(web, 'wave.dat', sep = ''), header = T)
-	attach(wave.dat)
-	layout(1:3)
-	plot(as.ts(waveht), ylab = 'Wave height')
-	acf(waveht)
-	pacf(waveht)
-	wave.arma = arima(waveht, order=c(4,0,4))
-	acf(wave.arma$res[-(1:4)])
-	pacf(wave.arma$res[-(1:4)])
-	hist(wave.arma$res[-(1:4)], xlab='ht/mm', main='')
-
-
-
-save.image('~/Desktop/R/Time Series/TimeSeries.RData')
+# 6.6.4 Wave tank data
+wave.dat <- read.table(paste(DATA, 'wave.dat', sep=''), header=T)
+layout(1:3)
+plot(as.ts(wave.dat$waveht), ylab='Wave height')
+acf(wave.dat$waveht)
+pacf(wave.dat$waveht)
+wave.arma <- arima(wave.dat$waveht, order=c(4, 0, 4))
+acf(wave.arma$res[-(1:4)])
+pacf(wave.arma$res[-(1:4)])
+hist(wave.arma$res[-(1:4)], xlab='ht/mm', main='')
