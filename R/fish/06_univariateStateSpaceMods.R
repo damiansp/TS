@@ -121,3 +121,19 @@ fitts <- StructTS(trees, type='level')
 #fitem <- MARSS(as.vector(trees), nile.mod.2)
 fitbf <- MARSS(as.vector(trees), method='BFGS')
 
+
+
+# 4. Comparing Models with AIC and Model Weights
+nile.aic <- c(kem.0$AICc, kem.1$AICc, kem.2$AICc, kem.3$AICc)
+delt.AIC <- nile.aic - min(nile.aic)
+rel.lik <- exp(-0.5 * delt.AIC)
+aic.weight <- rel.lik / sum(rel.lik)
+aic.table <- data.frame(
+  AICc=nile.aic, delt.AIC=delt.AIC, rel.lik=rel.lik, weight=aic.weight)
+rownames(aic.table) <- c(
+  'flat level', 'linear trend', 'stoc level', 'stoc level w drift')
+round(aic.table, 3)
+
+
+
+# 5. Basic Diagnostics
