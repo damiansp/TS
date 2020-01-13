@@ -13,15 +13,22 @@ DATA <- paste0("https://raw.githubusercontent.com/dallascard/",
                "Introductory_Time_Series_with_R_datasets/master/")
 
 
-# 7.2 Non-Seasonal ARIMA Models
-	# 7.2.1 Differencing and the electricity series
-	layout(c(1,1,2,3))
-	plot(Elec.ts)
-	plot(diff(Elec.ts))
-	plot(diff(log(Elec.ts)))
 
-	# 7.2.4 Simulation and Fitting
-	#set.seed(1)
+# 2 Non-Seasonal ARIMA Models
+
+
+# 2.1 Differencing and the electricity series
+CBE <- read.table(paste0(DATA, 'cbe.dat'), header=T)
+Elec.ts <- ts(CBE[, 3], start=1958, freq=12)
+
+layout(c(1, 1, 2, 3))
+plot(Elec.ts)
+plot(diff(Elec.ts))
+plot(diff(log(Elec.ts)))
+
+
+# 2.4 Simulation and Fitting
+#set.seed(1)
 	x = w = rnorm(1000)
 	for(i in 3:1000) {
 		x[i] = 0.5*x[i - 1] + x[i - 1] - 0.5*x[i - 2] + w[i] + 0.3*w[i - 1]
