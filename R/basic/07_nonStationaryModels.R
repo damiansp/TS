@@ -29,42 +29,43 @@ plot(diff(log(Elec.ts)))
 
 # 2.4 Simulation and Fitting
 #set.seed(1)
-	x = w = rnorm(1000)
-	for(i in 3:1000) {
-		x[i] = 0.5*x[i - 1] + x[i - 1] - 0.5*x[i - 2] + w[i] + 0.3*w[i - 1]
-	}
-	arima(x, order = c(1, 1, 1))	# ar1: 0.42 ± 0.04; ma1: 0.33 ± 0.05
-	plot(x, type = 'l')
+x <- w <- rnorm(1000)
+for(i in 3:1000) {
+  x[i] <- 1.5*x[i - 1] + - 0.5*x[i - 2] + w[i] + 0.3*w[i - 1]
+}
+arima(x, order=c(1, 1, 1))	# ar1: 0.42 ± 0.04; ma1: 0.33 ± 0.05
+par(mfrow=c(1, 1))
+plot(x, type='l')
 	
-	# Simulation can be explicit as above, or with arima.sim()
-	x = arima.sim(model = list(order = c(1, 1, 1), ar = 0.5, ma = 0.3), 
-				  n = 1000)
-	plot(x, type = 'l', col = rgb(0, 0, 0, 0.1), ylim = c(-200, 200))
+# Simulation can be explicit as above, or with arima.sim()
+x <- arima.sim(model=list(order=c(1, 1, 1), ar=0.5, ma=0.3), n=1000)
+plot(x, type='l', col=rgb(0, 0, 0, 0.1), ylim=c(-200, 200))
 	
-	for (i in 1:10000) {
-		x = arima.sim(model = list(order = c(1, 1, 1), ar = 0.5, ma = 0.3), 
-					  n = 1000)
-		lines(x, col = rgb(0, 0, 0, 0.01))
-	}
-
-	# 7.2.5 IMA(1,1) model fitted to the beer production series
-	Beer.ts = ts(CBE[,2], start = 1958, freq = 12)
-	plot(Beer.ts)
-	plot(diff(Beer.ts))
-	Beer.ima = arima(Beer.ts, order = c(0, 1, 1))
-	Beer.ima
-	# x[t] = x[t - 1] + w[t] - 0.333*w[t - 1]
-	acf(resid(Beer.ima))
-
-	Beer.1991 = predict(Beer.ima, n.ahead = 24)
-	plot(Beer.ts, xlim = c(1958, 1993))
-	lines(seq(1991, 1992 + (11 / 12), length.out = 24), Beer.1991$pred,
-		  col = 2)
+for (i in 1:10000) {
+  x <- arima.sim(model=list(order=c(1, 1, 1), ar=0.5, ma=0.3), n=1000)
+  lines(x, col = rgb(0, 0, 0, 0.01))
+}
 
 
+# 2.5 IMA(1,1) model fitted to the beer production series
+Beer.ts <- ts(CBE[, 2], start=1958, freq=12)
+plot(Beer.ts)
+plot(diff(Beer.ts))
+Beer.ima <- arima(Beer.ts, order=c(0, 1, 1))
+Beer.ima
+# x[t] = x[t - 1] + w[t] - 0.333*w[t - 1]
+acf(resid(Beer.ima))
 
-	# 7.3 Seasonal ARIMA Models
-		# 7.3.2 Fitting procedure
+Beer.1991 <- predict(Beer.ima, n.ahead=24)
+plot(Beer.ts, xlim=c(1958, 1993))
+lines(seq(1991, 1992 + (11 / 12), length.out=24), Beer.1991$pred, col=2)
+
+
+
+# 3 Seasonal ARIMA Models
+
+
+# 3.2 Fitting procedure
 		AIC(arima(log(Elec.ts), order = c(1, 1, 0), 
 				  seas = list(order = c(1, 0, 0), 12)))
 		AIC(arima(log(Elec.ts), order = c(0, 1, 1), 
