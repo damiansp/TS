@@ -12,6 +12,7 @@ library(fExtremes)
 #library(FRAPO)
 library(ismev)
 
+data(bmw)
 data(siemens)
 
 
@@ -39,3 +40,35 @@ m.years <- (1
 
 sie.gev3 <- gevFit(sie.gev$data, type='pwm')
 sie.gev3
+
+
+
+# Code 7.2: R-Block Maxima for BMW Losses
+bmw.loss <- -1.0 * bmw * 100
+years <- format(attr(bmw.loss, 'time'), '%Y')
+attr(bmw.loss, 'years') <- years
+year.u <- unique(years)
+idx <- 1:length(year.u)
+r <- 2 # largest no. of losses per year to model
+bmw.order <- t(
+  sapply(
+    idx, 
+    function(x) { 
+      head(sort(bmw.loss[attr(bmw.loss, 'years') == year.u[x]], decreasing=T),
+           r)
+    }))
+rownames(bmw.order) <- year.u
+colnames(bmw.order) <- paste('r', 1:r, sep='')
+head(bmw.order)
+
+plot(year.u, 
+     bmw.order[, 1], 
+     ylim=range(bmw.order), 
+     ylab='BMW Losses (%)', 
+     xlab='', 
+     pch=16)
+points(year.u, bmw.order[, 2], col=4, pch=18)
+
+# mle & se are for mu, sigma, and xi respectively
+bmw.order.fit <- rlarg.fit(bmw.order)
+rlarg.diag(bmw.order.fit)
