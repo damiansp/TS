@@ -7,12 +7,13 @@ lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
 setwd('~/Learning/TS/R/frapo')
 
 library(evir)
-#library(fBasics)
+library(fBasics)
 library(fExtremes)
 #library(FRAPO)
 library(ismev)
 
 data(bmw)
+data(DowJones30)
 data(siemens)
 
 
@@ -72,3 +73,21 @@ points(year.u, bmw.order[, 2], col=4, pch=18)
 # mle & se are for mu, sigma, and xi respectively
 bmw.order.fit <- rlarg.fit(bmw.order)
 rlarg.diag(bmw.order.fit)
+
+
+
+# Code 7.3 POT GDP for Boeing Losses
+dj <- timeSeries(DowJones30[, -1], charvec=as.character(DowJones30[, 1]))
+ba.loss <- -1.0 * returns(dj[, 'BA'], percentage=T, trim=T)
+
+# MRL-Plot (Mean Residual Life)
+mrlPlot(ba.loss, umin=-10, umax=10)
+
+# GPD
+ba.fit <- gpdFit(ba.loss, u=3)
+par(mfrow=c(2, 2))
+for (i in 1:4) {
+  plot(ba.fit, which=i)	
+}
+
+gpdRiskMeasures(ba.fit, prob=c(0.95, 0.99, 0.995))
