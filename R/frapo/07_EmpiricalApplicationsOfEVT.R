@@ -14,6 +14,7 @@ library(ismev)
 
 data(bmw)
 data(DowJones30)
+data(nyse)
 data(siemens)
 
 
@@ -91,3 +92,24 @@ for (i in 1:4) {
 }
 
 gpdRiskMeasures(ba.fit, prob=c(0.95, 0.99, 0.995))
+
+
+
+# Code 7.4 Declustering to NYSE Exceedances
+nyse.level <- timeSeries(nyse[, 2], charvec=as.character(nyse[, 1]))
+nyse.loss <- na.omit(-1.0 * diff(log(nyse.level)) * 100)
+colnames(nyse.loss) <- 'NYSELoss'
+
+# Point Process Data
+nyse.pp <- pointProcess(x=nyse.loss, u=quantile(nyse.loss, 0.95))
+
+# Decluster
+dc.fits = list()
+for (run in c(5, 10, 20, 40, 60, 120)) {
+  fitname <- sprintf('dc.%d.fit', run)
+  dc <- deCluster(x=nyse.pp, run=run, doplot=F)
+  dc.fit <- gpdFit(dc, u=min(dc))
+  dc.fits[[fitname]] <- dc.fit
+}
+
+dc.fits[['dc.5.fit']]
