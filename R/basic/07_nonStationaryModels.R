@@ -1,4 +1,5 @@
-#=========#=========#=========#=========#=========#=========#=========#=========rm(list = ls())
+#=========#=========#=========#=========#=========#=========#=========#=========
+rm(list = ls())
 lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
        detach,
        character.only=T,
@@ -8,6 +9,8 @@ setwd('~/Learning/TS/R/basic')
 library(MASS)
 library(nlme)
 library(tseries)
+
+data(SP500)
 
 DATA <- paste0("https://raw.githubusercontent.com/dallascard/",
                "Introductory_Time_Series_with_R_datasets/master/")
@@ -66,66 +69,60 @@ lines(seq(1991, 1992 + (11 / 12), length.out=24), Beer.1991$pred, col=2)
 
 
 # 3.2 Fitting procedure
-		AIC(arima(log(Elec.ts), order = c(1, 1, 0), 
-				  seas = list(order = c(1, 0, 0), 12)))
-		AIC(arima(log(Elec.ts), order = c(0, 1, 1), 
-				  seas = list(order = c(0, 0 , 1), 12)))
+AIC(arima(log(Elec.ts), order=c(1, 1, 0), seas=list(order=c(1, 0, 0), 12)))
+AIC(arima(log(Elec.ts), order=c(0, 1, 1), seas=list(order=c(0, 0 , 1), 12)))
 
-		get.best.arima = function(x.ts, maxord=c(1, 1, 1, 1, 1, 1)) {
-			best.aic = 1e8
-			n = length(x.ts)
-			for(p in 0:maxord[1]) {
-				for(d in 0:maxord[2]) {
-					for(q in 0:maxord[3]) {
-						for(P in 0:maxord[4]) {
-							for(D in 0:maxord[5]) {
-								for(Q in 0:maxord[6]) {
-									fit = arima(
-										x.ts, 
-										order = c(p, d, q), 
-										seas = list(order = c(P, D, Q), 
-													frequency(x.ts)),
-										method='CSS'
-									)
+get.best.arima <- function(x.ts, maxord=c(1, 1, 1, 1, 1, 1)) {
+  best.aic <- 1e8
+  n <- length(x.ts)
+  for (p in 0:maxord[1]) {
+    for (d in 0:maxord[2]) {
+      for (q in 0:maxord[3]) {
+        for (P in 0:maxord[4]) {
+          for (D in 0:maxord[5]) {
+            for (Q in 0:maxord[6]) {
+              fit <- arima(x.ts, 
+                           order=c(p, d, q), 
+                           seas=list(order=c(P, D, Q), frequency(x.ts)), 
+                           method='CSS')
+              fit.aic <- -2 * fit$loglik + (log(n) + 1) * length(fit$coef)
+              if (fit.aic < best.aic) {
+                best.aic <- fit.aic
+                best.fit <- fit
+                best.model <- c(p, d, q, P, D, Q)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  list(best.aic=best.aic, best.fit=best.fit, best.model=best.model)
+}
 
-									fit.aic = -2 * fit$loglik + 
-										(log(n) + 1) * length(fit$coef)
-
-									if(fit.aic < best.aic) {
-										best.aic = fit.aic
-										best.fit = fit
-										best.model = c(p,d,q, P,D,Q)
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			
-			list(best.aic=best.aic, best.fit=best.fit, best.model=best.model)
-		}
-
-		best.arima.elec = get.best.arima(log(Elec.ts), 
-										 maxord = c(2, 2, 2, 2, 2, 2))
-		best.arima.elec
-		best.fit.elec = best.arima.elec[[2]]
-		acf(resid(best.arima.elec$best.fit))
-		
-		ts.plot(cbind(window(Elec.ts, start = 1981), 
-					  exp(predict(best.fit.elec, 12)$pred)), col = 1:2)
+best.arima.elec <- get.best.arima(log(Elec.ts), maxord=c(2, 2, 2, 2, 2, 2))
+best.arima.elec
+best.fit.elec <- best.arima.elec[[2]]
+acf(resid(best.arima.elec$best.fit))
+ts.plot(
+  cbind(
+    window(Elec.ts, start=1981), 
+    exp(predict(best.fit.elec, 12)$pred)), 
+  col=1:2)
 
 
 
-# 7.4 ARCH Models
-	# 7.4.1 S&P500 series
-	data(SP500)
-	plot(SP500, type = 'l')
-	acf(SP500)
-	abline(h = mean(SP500), col = 'red')
-	acf((SP500 - mean(SP500))^2) # correlations in variance (volatility)
+# 4 ARCH Models
 
-	# 7.4.4 Simulation and fitted GARCH model
+
+# 4.1 S&P500 series
+plot(SP500, type='l')
+abline(h=mean(SP500), col='red')
+acf(SP500)
+acf((SP500 - mean(SP500))^2) # correlations in variance (volatility)
+
+
+# 4.4 Simulation and fitted GARCH model
 	# Simulate:
 	alpha0 = 0.1
 	alpha1 = 0.4
