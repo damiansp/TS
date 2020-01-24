@@ -123,32 +123,31 @@ acf((SP500 - mean(SP500))^2) # correlations in variance (volatility)
 
 
 # 4.4 Simulation and fitted GARCH model
-	# Simulate:
-	alpha0 = 0.1
-	alpha1 = 0.4
-	beta1 = 0.2	# note: alpha1 + beta1 must be < 1 to ensure stability
-	w = rnorm(10000)
-	a = h = numeric(10000)
+# Simulate:
+alpha0 <- 0.1
+alpha1 <- 0.4
+beta1 <- 0.2	# note: alpha1 + beta1 must be < 1 to ensure stability
+w <- rnorm(10000)
+a <- h <- numeric(10000)
+for(i in 2:10000) {
+  h[i] <- alpha0 + alpha1*(a[i - 1]^2) + beta1*h[i - 1]
+  a[i] <- w[i]*sqrt(h[i])
+}
 
-	for(i in 2:10000) {
-		h[i] = alpha0 + alpha1*(a[i - 1]^2) + beta1*h[i - 1]
-		a[i] = w[i]*sqrt(h[i])
-	}
+plot(a, type = 'l')
+acf(a)
+acf(a^2)
 
-	plot(a, type = 'l')
-	acf(a)
-	acf(a^2)
-
-	# Estimate model parameters from simulated data
-	a.garch = garch(a, grad = 'numerical', trace = F)
-	a.garch2.2 = garch(a, grad = 'numerical', order = c(2, 2), trace = F)
-	a.garch1.2 = garch(a, grad = 'numerical', order = c(1, 2), trace = F)
-	a.garch2.1 = garch(a, grad = 'numerical', order = c(2, 1), trace = F)
-	summary(a.garch)	#AIC: 13261
-	summary(a.garch2.2)	#AIC: 13265
-	summary(a.garch1.2)	#AIC: 13263
-	summary(a.garch2.1)	#AIC: 13263
-	confint(a.garch)
+# Estimate model parameters from simulated data
+a.garch <- garch(a, grad='numerical', trace=F)
+a.garch2.2 <- garch(a, grad='numerical', order=c(2, 2), trace=F)
+a.garch1.2 <- garch(a, grad='numerical', order=c(1, 2), trace=F)
+a.garch2.1 <- garch(a, grad='numerical', order=c(2, 1), trace=F)
+summary(a.garch)	#AIC: 13261
+summary(a.garch2.2)	#AIC: 13265
+summary(a.garch1.2)	#AIC: 13263
+summary(a.garch2.1)	#AIC: 13263
+confint(a.garch)
 
 	# 7.4.5 Fit to S&P500 series
 	sp.garch = garch(SP500, trace = F)
