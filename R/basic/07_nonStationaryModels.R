@@ -149,34 +149,35 @@ summary(a.garch1.2)	#AIC: 13263
 summary(a.garch2.1)	#AIC: 13263
 confint(a.garch)
 
-	# 7.4.5 Fit to S&P500 series
-	sp.garch = garch(SP500, trace = F)
-	sp.res = sp.garch$res[-1]
-	acf(sp.res)
-	acf(sp.res^2)
+	
+# 4.5 Fit to S&P500 series
+sp.garch <- garch(SP500, trace=F)
+sp.res <- sp.garch$res[-1]
+acf(sp.res)
+acf(sp.res^2)
 
-	# 7.4.6 Volatility in climate series
-	stemp = scan(paste(web, 'stemp.dat', sep = ''))
-	stemp.ts = ts(stemp, start = 1850, freq = 12)
-	plot(stemp.ts)
 
-	stemp.best = get.best.arima(stemp.ts, maxord=rep(2, 6))
-	stemp.best
-	stemp.arima = arima(stemp.ts, order = c(1, 1, 2), 
-						seas = list(order = c(2, 0, 1), 12))
-	t(confint(stemp.arima))
+# 4.6 Volatility in climate series
+stemp <- scan(paste(DATA, 'stemp.dat', sep = ''))
+stemp.ts <- ts(stemp, start=1850, freq=12)
+plot(stemp.ts)
+
+stemp.best <- get.best.arima(stemp.ts, maxord=rep(2, 6))
+stemp.best
+stemp.arima <- arima(stemp.ts, order=c(1, 1, 2), seas=list(order=c(2, 0, 1), 12))
+t(confint(stemp.arima))
 	
-	stemp.res = resid(stemp.arima)
-	layout(1:2)
-	acf(stemp.res)
-	acf(stemp.res^2)
+stemp.res <- resid(stemp.arima)
+layout(1:2)
+acf(stemp.res)
+acf(stemp.res^2)
 	
-	stemp.garch = garch(stemp.res, trace = F)
-	t(confint(stemp.garch))
-	
-	stemp.garch.res = resid(stemp.garch)[-1]
-	acf(stemp.garch.res)
-	acf(stemp.garch.res^2)
+stemp.garch <- garch(stemp.res, trace=F)
+t(confint(stemp.garch))
+
+stemp.garch.res <- resid(stemp.garch)[-1]
+acf(stemp.garch.res)
+acf(stemp.garch.res^2)
 	
 	
 	
