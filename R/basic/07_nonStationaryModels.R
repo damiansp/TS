@@ -178,9 +178,3 @@ t(confint(stemp.garch))
 stemp.garch.res <- resid(stemp.garch)[-1]
 acf(stemp.garch.res)
 acf(stemp.garch.res^2)
-	
-	
-	
-	
-		
-	save.image('~/Desktop/R/Time Series/TimeSeries.RData')
