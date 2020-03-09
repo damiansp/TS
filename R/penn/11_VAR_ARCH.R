@@ -7,8 +7,10 @@ lapply(paste('package:', names(sessionInfo()$otherPkgs), sep=''),
 setwd('~/Learning/TS/R/penn')
 DATA <- '../../data'
 
-#library(astsa)
+library(astsa)
 library(fGarch)
+library(vars)
+
 
 
 # 1. ARCH/GARCH
@@ -35,3 +37,17 @@ pacf(x^2)
 y <- x - mean(x)
 x.g <- garchFit(~garch(1, 1), y, include.mean=F)
 summary(x.g)
+
+
+
+# 2. VAR(p) Models
+x <- cbind(cmort, tempr, part)
+plot.ts(x, main='', xlab='')
+fitvar1 <- VAR(x, p=1, type='both')
+summary(fitvar1)
+
+fitvar2 <- VAR(x, p=2, type='both')
+summary(fitvar2)
+acf(residuals(fitvar2)[, 1]) # 1 = cmort model
+# view all
+acf(residuals(fitvar2))
