@@ -1,3 +1,3 @@
 # Practical TSA
 Learning about Python Libraries from:
-<a href="https://github.com/PacktPublishing/Practical-Time-Series-Analysis">this repo</a>
+<a href="https://github.com/PracticalTimeSeriesAnalysis/BookRepo">this repo</a>
