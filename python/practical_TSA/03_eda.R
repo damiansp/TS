@@ -1,3 +1,5 @@
+library(zoo)
+
 head(EuStockMarkets)
 plot(EuStockMarkets)
 class(EuStockMarkets)
@@ -21,3 +23,26 @@ mn <- function(n) { rep(1/n, n) }
 plot(x, type='l')
 lines(filter(x, mn(5)), col=2, lw=2)
 lines(filter(x, mn(25)), col=3, lw=2)
+
+
+f1 <- rollapply(zoo(x), 20, function(w) min(w), align='left', partial=TRUE)
+f2 <- rollapply(zoo(x), 20, function(w) min(w), align='right', partial=TRUE)
+
+plot(x, type='l')
+lines(f1, col=2, lw=2)
+lines(f2, col=3, lw=2)
+
+
+# Expanding windows
+plot(x, type='l')
+lines(cummax(x), col=2, lw=3)
+lines(cumsum(x) / 1:length(x), col=3, lw=3)
+
+plot(x, type='l')
+lines(rollapply(zoo(x), seq_along(x), function(w) max(w), partial=T, align='right'),
+      col=2,
+      lw=3)
+lines(rollapply(zoo(x), seq_along(x), function(w) mean(w), partial=T, align='right'),
+      col=3,
+      lw=3)
+      
