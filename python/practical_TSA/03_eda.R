@@ -46,3 +46,37 @@ lines(rollapply(zoo(x), seq_along(x), function(w) mean(w), partial=T, align='rig
       col=3,
       lw=3)
       
+
+# ACF
+x <- 1:100
+y <- sin(x * pi / 3)
+plot(y)
+lines(y)
+acf(y)
+cor(y[2:100], y[1:99], use='pairwise.complete.obs')
+cor(y[3:100], y[1:98], use='pairwise.complete.obs')
+
+# PACF
+plot(y)
+lines(y)
+pacf(y)
+
+y2 <- sin(x * pi/10)
+par(mfrow=c(2, 3))
+plot(y)
+lines(y)
+acf(y)
+pacf(y)
+plot(y2)
+lines(y2)
+acf(y2)
+pacf(y2)
+
+y <- y + y2
+par(mfrow=c(3, 1))
+plot(y)
+lines(y)
+acf(y)
+pacf(y)
+
+
