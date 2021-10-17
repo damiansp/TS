@@ -1,5 +1,7 @@
+library(timevis)
 library(zoo)
 
+DATA <- '~/Learning/TS/data'
 head(EuStockMarkets)
 plot(EuStockMarkets)
 class(EuStockMarkets)
@@ -103,4 +105,3 @@ acf(x)
 pacf(x)
 
 
-# Spurious Correlation
