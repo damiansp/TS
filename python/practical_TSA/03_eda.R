@@ -79,4 +79,28 @@ lines(y)
 acf(y)
 pacf(y)
 
+noise1 <- rnorm(100, sd=0.05)
+noise2 <- rnorm(100, sd=0.05)
+y1 <- y + noise1
+y2 <- y2 + noise2
+y <- y1 + y2
 
+par(mfrow=c(3, 3))
+plot(y1); lines(y1)
+acf(y1)
+pacf(y1)
+plot(y2); lines(y2)
+acf(y2)
+pacf(y2)
+plot(y); lines(y)
+acf(y)
+pacf(y)
+
+par(mfrow=c(3, 1))
+x <- 1:50
+plot(x)
+acf(x)
+pacf(x)
+
+
+# Spurious Correlation
