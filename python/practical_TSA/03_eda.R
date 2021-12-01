@@ -1,3 +1,4 @@
+library(forecast)
 library(timevis)
 library(zoo)
 
@@ -105,3 +106,15 @@ acf(x)
 pacf(x)
 
 
+# 2D Vis
+ap <- (matrix(AirPassengers, nrow=12))
+apt <- t(ap)
+colors <- c('green', 'red', 'pink', 'blue', 'yellow', 'coral', 'black', 'grey', 'cyan',
+            'lightblue', 'maroon', 'purple')
+matplot(ap, type='l', col=colors, lty=1, xaxt='n', ylab='Passengers')
+legend('topleft', legend=1949:1960, lty=1, col=colors)
+mos <- c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 
+         'Dec')
+axis(1, at=1:12, labels=mos)
+
+seasonplot(AirPassengers)
