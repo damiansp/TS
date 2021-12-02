@@ -118,3 +118,23 @@ mos <- c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', '
 axis(1, at=1:12, labels=mos)
 
 seasonplot(AirPassengers)
+matplot(apt, type='l', col=colors, lty=1)
+legend('topleft', legend=mos, col=colors, lty=1)
+
+monthplot(AirPassengers)
+
+
+hist2d <- function(data, nbins, xlabs) {
+  ymin <- min(data)
+  ymax <- max(data) * 1.0001
+  ybins <- seq(ymin, ymax, length=nbins + 1)
+  hist.mat <- matrix(0, nrow=nbins, ncol=ncol(data))
+  for (i in 1:nrow(data)) {
+    ts <- findInterval(data[i, ], ybins)
+    for (j in 1:ncol(data)) {
+    	hist.mat[ts[j], j] <- hist.mat[ts[j], j] + 1
+    }
+  }
+  hist.mat
+}
+
