@@ -1,6 +1,8 @@
+library(data.table)
 library(forecast)
 library(timevis)
 library(zoo)
+
 
 DATA <- '~/Learning/TS/data'
 head(EuStockMarkets)
@@ -137,4 +139,7 @@ hist2d <- function(data, nbins, xlabs) {
   }
   hist.mat
 }
+
+h <- hist2d(apt, 5, months)
+image(t(h), axes=F, xlab='Time', ylab='Passengers')
 
