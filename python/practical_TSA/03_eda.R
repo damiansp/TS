@@ -1,5 +1,6 @@
 library(data.table)
 library(forecast)
+library(plotly)
 library(timevis)
 library(zoo)
 
@@ -143,3 +144,23 @@ hist2d <- function(data, nbins, xlabs) {
 h <- hist2d(apt, 5, months)
 image(t(h), axes=F, xlab='Time', ylab='Passengers')
 
+months <- 1:12
+ap <- data.table(matrix(AirPassengers, 12))
+names(ap) <- as.character(1949:1960)
+ap[, month := months]
+ap <- melt(ap, id.vars='month')
+names(ap) <- c('month', 'year', 'count')
+plot_ly(ap, x=~month, y=~year, z=~count, color=~as.factor(month)) %>%
+  add_markers() %>%
+  layout(scene=list(xaxis=list(title='Month'), 
+                    yaxis=list(title='Year'), 
+                    zaxis=list(title='PassengerCount')))
+file.loc <- 'https://raw.githubusercontent.com/plotly/datasets/master/_3d-line-plot.csv'
+data <- read.csv(file.loc)
+plot_ly(data, 
+        x=~x1, 
+        y=~y1, 
+        z=~z1, 
+        type='scatter3d', 
+        mode='lines', 
+        line=list(color='#1f77b4', width=1))
